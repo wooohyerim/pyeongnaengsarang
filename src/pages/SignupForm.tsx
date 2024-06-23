@@ -33,20 +33,20 @@ const SignupForm = () => {
     return fileList && fileList.length > 0 ? fileList[0]?.name : "";
   };
 
-  const onSubmit = async ({ email, password, nickname, image }: FormValues) => {
-    console.log(email, password, nickname);
-    console.log(image);
+  const onSubmit = async (data: FormValues) => {
+    // console.log(data.email, data.password, data.nickname);
+    // console.log(data.image);
     try {
       const credential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        data.email,
+        data.password
       );
       const user = credential.user;
       console.log(user);
 
       await updateProfile(user, {
-        displayName: nickname,
+        displayName: data.nickname,
       });
     } catch (error: unknown) {
       const err = error as FirebaseError;
