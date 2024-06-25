@@ -59,6 +59,7 @@ const SignupForm = () => {
         name: data.name,
         nickname: user.displayName,
         bio: data.bio,
+        password: data.password,
         createAt: Timestamp.fromDate(new Date()),
       });
       alert("가입에 성공했습니다.");

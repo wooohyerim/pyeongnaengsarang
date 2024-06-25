@@ -1,13 +1,24 @@
 import { create } from "zustand";
 
-interface UserState {
-  user: null;
-  setUser: (user: null) => void;
+interface User {
+  uid: string;
+  photoURL: string | null;
+  email: string | null;
+  displayName: string | null;
 }
 
-const userUserState = create<UserState>((set) => ({
+interface UserState {
+  user: User | null;
+  setUser: (user: User) => void;
+  isLogin: boolean;
+  setIsLogin: (isLogin: boolean) => void;
+}
+
+const useUserState = create<UserState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
+  isLogin: false,
+  setIsLogin: (isLogin) => set({ isLogin }),
 }));
 
-export default userUserState;
+export default useUserState;

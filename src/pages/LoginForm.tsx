@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { auth } from "@/firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Button from "@/components/common/Button";
+import useUserState from "@/store/useUserState";
 
 type authValues = {
   email: string;
@@ -12,10 +13,12 @@ type authValues = {
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { setUser, setIsLogin } = useUserState();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<authValues>();
 
@@ -24,9 +27,18 @@ const LoginForm = () => {
   };
 
   const onSubmit = async (data: authValues) => {
-    // console.log(data.email, data.password, data.nickname);
-    // console.log(data.image);
     try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      const user = userCredential.user;
+      setUser(user);
+      setIsLogin(true);
+      alert("로그인에 성공했습니다.");
+      reset();
+      navigate("/main");
     } catch (error) {
       console.log(error);
     }
@@ -47,24 +59,47 @@ const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-8 w-[400px] h-[400px] my-0 mx-auto p-4 "
       >
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 h-[80px]">
           <label className="text-[#636363] text-[12px]">Email</label>
           <input
-            {...register("email")}
+            {...register("email", {
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-.]+$/,
+                message: "유효한 이메일 주소를 입력해주세요.",
+              },
+              required: "이메일을 입력해주세요.",
+            })}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="text"
           />
+          {errors.email && (
+            <span className="pl-1 text-[#ff0000] text-[12px]">
+              {errors.email.message}
+            </span>
+          )}
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 h-[80px]">
           <label className="text-[#636363] text-[12px]">Password</label>
           <input
-            {...register("password")}
+            {...register("password", {
+              pattern: {
+                value:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                message: "영문 + 숫자 + 특수문자 8자 이상 입력해주세요.",
+              },
+              required: "비밀번호를 입력해주세요.",
+            })}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="password"
           />
+          {errors.password && (
+            <span className="pl-1 text-[#ff0000] text-[12px]">
+              {errors.password.message}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-4 mt-8">
-          <Button className={""} type={"button"} title={"로그인"} />
+          <Button className={""} type={"submit"} title={"로그인"} />
           <Button className={""} type={"button"} title={"구글"} />
         </div>
       </form>
