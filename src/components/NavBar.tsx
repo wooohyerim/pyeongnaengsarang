@@ -1,14 +1,12 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { RiCloseFill } from "react-icons/ri";
+import React from "react";
 import { Link } from "react-router-dom";
 import Button from "./common/Button";
 
 interface NavBarProps {
   onClickLogout: () => void;
-  setIsOpened: Dispatch<SetStateAction<boolean>>;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ onClickLogout, setIsOpened }) => {
+const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
   // const navigate = useNavigate();
   const NAVIGATE_LIST = [
     { title: "Home", href: "/main" },
@@ -17,8 +15,8 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout, setIsOpened }) => {
   ];
 
   return (
-    <nav className="absolute top-0  flex flex-col gap-6 w-[200px] h-dvh p-4 bg-[#D1BB9E]">
-      <div className="w-full">
+    <nav className="fixed bottom-0 flex items-center  w-[500px] h-[70px] p-4 bg-[#D1BB9E]">
+      {/* <div className="w-full">
         <RiCloseFill
           size={30}
           style={{
@@ -27,27 +25,24 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout, setIsOpened }) => {
           }}
           onClick={() => setIsOpened(false)}
         />
-      </div>
-      <ul className="flex flex-col w-full gap-4 py-2">
+      </div> */}
+      <ul className="flex w-full gap-4 py-2">
         {NAVIGATE_LIST.map((item) => {
           return (
             <Link to={item.href} key={item.title}>
-              <li
-                className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"
-
-                // onClick={() => navigate(item.navigate)}
-              >
+              <li className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition">
                 {item.title}
               </li>
             </Link>
           );
         })}
       </ul>
+
       <div>
         <Button
           title="로그아웃"
           type="button"
-          className="w-[100px] h-[35px] p-1 border-none bg-[#543310] outline-none text-white  font-bold rounded-[4px]"
+          className="w-[100px] h-[40px] p-1 border-none bg-[#543310] outline-none text-white  font-bold rounded-[4px]"
           onClick={onClickLogout}
         />
       </div>

@@ -30,7 +30,7 @@ const UserList = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap gap-4 w-[500px] h-full mt-5">
+      <div className="flex flex-wrap h-full gap-4 mt-5">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div

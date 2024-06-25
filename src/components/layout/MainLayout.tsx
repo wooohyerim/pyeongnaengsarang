@@ -4,13 +4,11 @@ import Header from "../Header";
 import NavBar from "../NavBar";
 import useUserState from "@/store/useUserState";
 import { auth } from "@/firebase/firebase";
-import { useQuery } from "@tanstack/react-query";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { setIsLogin } = useUserState();
   const navigate = useNavigate();
   const [profileUrl, setProfileUrl] = useState("");
-  const [isOpened, setIsOpened] = useState(false);
   const user = auth.currentUser;
 
   // 현재 유저 확인
@@ -43,15 +41,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div>
-      <Header
-        profileUrl={profileUrl}
-        goToMyPage={goToMyPage}
-        setIsOpened={setIsOpened}
-      />
-      {isOpened === true && (
-        <NavBar onClickLogout={onClickLogout} setIsOpened={setIsOpened} />
-      )}
+    <div className="w-[500px]">
+      <Header profileUrl={profileUrl} goToMyPage={goToMyPage} />
+      <NavBar onClickLogout={onClickLogout} />
       <div className="p-3">{children}</div>
     </div>
   );
