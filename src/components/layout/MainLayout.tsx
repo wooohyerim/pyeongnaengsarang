@@ -6,23 +6,18 @@ import useUserState from "@/store/useUserState";
 import { auth } from "@/firebase/firebase";
 import { useQuery } from "@tanstack/react-query";
 
-interface AuthData {
-  isLogin: boolean;
-  profileUrl: string;
-}
-
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { setIsLogin } = useUserState();
   const navigate = useNavigate();
   const [profileUrl, setProfileUrl] = useState("");
   const [isOpened, setIsOpened] = useState(false);
   const user = auth.currentUser;
-  // console.log(user);
 
   // 현재 유저 확인
-  const currentData = async () => {
+  useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
+        // console.log(user);
         setIsLogin(true);
         setProfileUrl(user.photoURL || "");
       } else {
@@ -31,35 +26,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         setProfileUrl("");
       }
     });
-  };
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["authState"],
-    queryFn: currentData,
-  });
-
-  if (isLoading) {
-    return <span>Loading...</span>;
-  }
-
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
-  console.log("상위 레이아웃 data  => ", data);
-
-  // useEffect(() => {
-  //   auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       // console.log(user);
-  //       setIsLogin(true);
-  //       setProfileUrl(user.photoURL || "");
-  //     } else {
-  //       console.log("로그아웃");
-  //       setIsLogin(false);
-  //       setProfileUrl("");
-  //     }
-  //   });
-  // }, [user]);
+  }, [user]);
 
   const onClickLogout = async () => {
     try {
