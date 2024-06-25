@@ -1,12 +1,35 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { auth } from "@/firebase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import Button from "@/components/common/Button";
+
+type authValues = {
+  email: string;
+  password: string;
+};
 
 const LoginForm = () => {
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<authValues>();
+
   const goToSignup = () => {
     navigate("/signup");
+  };
+
+  const onSubmit = async (data: authValues) => {
+    // console.log(data.email, data.password, data.nickname);
+    // console.log(data.image);
+    try {
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -20,10 +43,14 @@ const LoginForm = () => {
       <h1 className="mb-6 text-center text-[36px] text-[#543310] font-IBMSemibold ">
         Login
       </h1>
-      <form className="flex flex-col gap-8 w-[400px] h-[400px] my-0 mx-auto p-4 ">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-8 w-[400px] h-[400px] my-0 mx-auto p-4 "
+      >
         <div className="flex flex-col gap-1">
           <label className="text-[#636363] text-[12px]">Email</label>
           <input
+            {...register("email")}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="text"
           />
@@ -31,6 +58,7 @@ const LoginForm = () => {
         <div className="flex flex-col gap-1">
           <label className="text-[#636363] text-[12px]">Password</label>
           <input
+            {...register("password")}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="password"
           />

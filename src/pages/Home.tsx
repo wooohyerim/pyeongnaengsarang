@@ -10,7 +10,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center bg-[#F8F0E5]">
-      <div className="flex flex-col items-center gap-10 mt-40">
+      <div className="flex flex-col items-center gap-8 mt-48">
         <h1 className="font-BlackHanSans text-[64px] text-[#543310]">
           ㅍㄴㅅㄹ
         </h1>

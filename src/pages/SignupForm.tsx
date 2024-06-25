@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { auth } from "@/firebase/firebase";
+import { auth, db, storage } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-
-import Button from "@/components/common/Button";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { FirebaseError } from "firebase/app";
 
+import Button from "@/components/common/Button";
+
 type FormValues = {
-  image: string;
+  // image: File[];
+  image: File[];
   name: string;
   nickname: string;
   email: string;
@@ -22,20 +25,13 @@ const SignupForm = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FormValues>();
 
   const profileImg = watch("image");
 
-  // image 이름 가져오기
-  const getFileName = (fileList: any) => {
-    // console.log(fileList);
-    return fileList && fileList.length > 0 ? fileList[0]?.name : "";
-  };
-
   const onSubmit = async (data: FormValues) => {
-    // console.log(data.email, data.password, data.nickname);
-    // console.log(data.image);
     try {
       const credential = await createUserWithEmailAndPassword(
         auth,
@@ -43,11 +39,31 @@ const SignupForm = () => {
         data.password
       );
       const user = credential.user;
-      console.log(user);
+      // console.log(user);
+
+      // 프로필 이미지 storage 업로드, url collection 저장
+      const file = profileImg[0];
+      const fileRef = ref(storage, `${user.uid}/${file.name}`);
+      await uploadBytes(fileRef, file);
+
+      const downloadURL = await getDownloadURL(fileRef);
 
       await updateProfile(user, {
         displayName: data.nickname,
+        photoURL: downloadURL,
       });
+      await addDoc(collection(db, "users"), {
+        uid: user.uid,
+        profileImg: downloadURL,
+        email: user.email,
+        name: data.name,
+        nickname: user.displayName,
+        bio: data.bio,
+        createAt: Timestamp.fromDate(new Date()),
+      });
+      alert("가입에 성공했습니다.");
+      reset();
+      navigate("/login");
     } catch (error: unknown) {
       const err = error as FirebaseError;
       switch (err.code) {
@@ -86,26 +102,20 @@ const SignupForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-5 w-[400px] h-full my-0 mx-auto p-4"
       >
-        <div className="flex flex-col gap-1 h-[60px]">
-          <label
-            htmlFor="image"
-            className="w-[130px] h-8 text-center p-1 bg-[#D1BB9E] rounded-[4px] text-white cursor-pointer hover:bg-[#74512D] "
-          >
-            profile upload!
+        <div className="flex flex-col gap-1 h-[75px]">
+          <label htmlFor="image" className="text-[#636363] text-[12px]">
+            Profile
           </label>{" "}
-          <div className="text-[#D1BB9E] pl-1 ">
-            {profileImg && profileImg.length > 0 && getFileName(profileImg)}
-          </div>
           <input
             type={"file"}
             accept=".gif, .jpg, .png, .pdf, .jpeg"
             {...register("image", { required: "이미지를 등록해주세요." })}
             id={"image"}
-            className="hidden"
+            className="text-[14px] text-[#636363]"
           />
           {errors.image && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
-              {errors.image?.message}
+              {errors.image.message}
             </span>
           )}
         </div>
@@ -117,10 +127,8 @@ const SignupForm = () => {
               minLength: 2,
               required: "이름을 입력해주세요.",
             })}
-            className={
-              "w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
-            }
-            type={"text"}
+            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            type="text"
           />
           {errors.name && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -136,10 +144,8 @@ const SignupForm = () => {
               minLength: 2,
               required: "닉네임을 입력해주세요.",
             })}
-            className={
-              "w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
-            }
-            type={"text"}
+            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            type="text"
           />
           {errors.nickname && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -157,10 +163,8 @@ const SignupForm = () => {
               },
               required: "이메일을 입력해주세요.",
             })}
-            className={
-              "w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
-            }
-            type={"text"}
+            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            type="text"
           />
           {errors.email && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -179,10 +183,8 @@ const SignupForm = () => {
               },
               required: "비밀번호를 입력해주세요.",
             })}
-            className={
-              "w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
-            }
-            type={"password"}
+            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            type="password"
           />
           {errors.password && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -197,10 +199,8 @@ const SignupForm = () => {
               minLength: 3,
               required: "인사말을 입력해주세요.",
             })}
-            className={
-              "w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
-            }
-            type={"text"}
+            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            type="text"
           />
           {errors.bio && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
