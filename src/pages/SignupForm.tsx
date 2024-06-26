@@ -97,7 +97,7 @@ const SignupForm = () => {
         &lt;{" "}
       </span>
       <h1 className=" mb-6 text-center text-[36px] text-[#543310] font-IBMSemibold ">
-        Sign Up
+        ㅍㄴㅅㄹ 가입
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -105,7 +105,7 @@ const SignupForm = () => {
       >
         <div className="flex flex-col gap-1 h-[75px]">
           <label htmlFor="image" className="text-[#636363] text-[12px]">
-            Profile
+            프로필 이미지 *
           </label>{" "}
           <input
             type={"file"}
@@ -122,7 +122,7 @@ const SignupForm = () => {
         </div>
 
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Name</label>
+          <label className="text-[#636363] text-[12px]">이름 *</label>
           <input
             {...register("name", {
               minLength: 2,
@@ -139,7 +139,7 @@ const SignupForm = () => {
         </div>
 
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Nickname</label>
+          <label className="text-[#636363] text-[12px]">닉네임 *</label>
           <input
             {...register("nickname", {
               minLength: 2,
@@ -155,7 +155,7 @@ const SignupForm = () => {
           )}
         </div>
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Email</label>
+          <label className="text-[#636363] text-[12px]">이메일 *</label>
           <input
             {...register("email", {
               pattern: {
@@ -166,6 +166,7 @@ const SignupForm = () => {
             })}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="text"
+            placeholder="love@pyeongnaeng.com"
           />
           {errors.email && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -174,7 +175,7 @@ const SignupForm = () => {
           )}
         </div>
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Password</label>
+          <label className="text-[#636363] text-[12px]">비밀번호 *</label>
           <input
             {...register("password", {
               pattern: {
@@ -186,6 +187,7 @@ const SignupForm = () => {
             })}
             className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
             type="password"
+            placeholder="영문 + 숫자 + 특수문자 8자 이상"
           />
           {errors.password && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
@@ -193,14 +195,16 @@ const SignupForm = () => {
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Comment</label>
+        <div className="flex flex-col gap-1 h-[180px] ">
+          <label className="text-[#636363] text-[12px]">
+            자기소개 & 인사말 *
+          </label>
           <input
             {...register("bio", {
               minLength: 3,
-              required: "인사말을 입력해주세요.",
+              required: "자기소개&인사말을 입력해주세요.",
             })}
-            className="w-full h-[50px] p-4 border-none bg-white outline-none rounded-xl"
+            className="w-full h-[150px] p-4 border-none bg-white outline-none rounded-xl"
             type="text"
           />
           {errors.bio && (
@@ -209,7 +213,7 @@ const SignupForm = () => {
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-4 mt-8">
+        <div className="flex flex-col gap-6 mt-8">
           <Button className={""} type={"submit"} title={"가입하기"} />
           <Button
             className={

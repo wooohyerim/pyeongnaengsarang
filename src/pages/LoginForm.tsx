@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { auth } from "@/firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Button from "@/components/common/Button";
-import useUserState from "@/store/useUserState";
+import { useUserState } from "@/store/useUserState";
 
 type authValues = {
   email: string;
@@ -53,14 +53,14 @@ const LoginForm = () => {
         &lt;{" "}
       </span>
       <h1 className="mb-6 text-center text-[36px] text-[#543310] font-IBMSemibold ">
-        Login
+        로그인
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-8 w-[400px] h-[400px] my-0 mx-auto p-4 "
       >
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Email</label>
+          <label className="text-[#636363] text-[12px]">이메일 *</label>
           <input
             {...register("email", {
               pattern: {
@@ -79,7 +79,7 @@ const LoginForm = () => {
           )}
         </div>
         <div className="flex flex-col gap-1 h-[80px]">
-          <label className="text-[#636363] text-[12px]">Password</label>
+          <label className="text-[#636363] text-[12px]">비밀번호 *</label>
           <input
             {...register("password", {
               pattern: {
@@ -100,7 +100,7 @@ const LoginForm = () => {
         </div>
         <div className="flex flex-col gap-4 mt-8">
           <Button className={""} type={"submit"} title={"로그인"} />
-          <Button className={""} type={"button"} title={"구글"} />
+          <Button className={""} type={"button"} title={"구글 로그인"} />
         </div>
       </form>
       <div className=" w-full p-4 gap-4 text-[#D1BB9E] text-center text-[14px]">

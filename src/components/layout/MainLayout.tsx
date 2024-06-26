@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header";
 import NavBar from "../NavBar";
-import useUserState from "@/store/useUserState";
+import { useUserState } from "@/store/useUserState";
 import { auth } from "@/firebase/firebase";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {

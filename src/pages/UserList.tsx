@@ -16,19 +16,30 @@ const UserList = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users"],
     queryFn: getData,
+    // staleTime: Infinity,
   });
 
   if (isLoading) {
     return (
-      <span className="text-[#543310] text-[18px] text-center">Loading...</span>
+      <MainLayout>
+        <div className="w-full h-screen">
+          <span className="text-[#543310] text-[18px] text-center">
+            Loading...
+          </span>
+        </div>
+      </MainLayout>
     );
   }
 
   if (isError) {
     return (
-      <span className="text-[#543310] text-[18px] text-center">
-        Error: {error.message}
-      </span>
+      <MainLayout>
+        <div className="w-full h-screen">
+          <span className="text-[#543310] text-[18px] text-center">
+            Error: {error.message}
+          </span>
+        </div>
+      </MainLayout>
     );
   }
 
@@ -36,19 +47,19 @@ const UserList = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap w-full h-screen gap-4 p-3 mt-5">
+      <div className="flex flex-wrap justify-between gap-4 p-4 mt-3">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div
               key={user.uid}
-              className="flex flex-col gap-6 w-[230px] h-[450px] cursor-pointer hover:-translate-y-2 transition"
+              className="flex flex-col gap-4 w-[210px] h-[350px] cursor-pointer bg-white rounded-xl shadow-md"
             >
               <img
                 src={user.profileImg}
                 alt="img"
-                className="w-full h-[230px] object-cover rounded-xl"
+                className="w-[210px] h-[220px] object-cover rounded-xl"
               />
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 p-1">
                 <span className="text-[#74512D] font-IBMSemibold">
                   {user.nickname}
                 </span>
