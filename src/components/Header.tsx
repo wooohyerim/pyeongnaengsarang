@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -12,10 +12,10 @@ const Header: React.FC<HeaderProps> = ({ profileUrl, goToMyPage }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-between w-[500px] h-12 px-3  border border-b-[#B1ABAB]">
+    <header className="flex items-center justify-between w-full h-14 px-3  border-x-0 border border-b-[#B1ABAB]">
       <h1
         onClick={() => navigate("/main")}
-        className="font-BlackHanSans text-[24px] text-[#543310] cursor-pointer"
+        className="font-BlackHanSans text-[28px] text-[#543310] cursor-pointer"
       >
         ㅍㄴㅅㄹ
       </h1>
@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ profileUrl, goToMyPage }) => {
           <AvatarFallback>profile</AvatarFallback>
         </Avatar>
       </div>
-    </div>
+    </header>
   );
 };
 

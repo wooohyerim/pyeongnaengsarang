@@ -19,23 +19,29 @@ const UserList = () => {
   });
 
   if (isLoading) {
-    return <span>Loading...</span>;
+    return (
+      <span className="text-[#543310] text-[18px] text-center">Loading...</span>
+    );
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>;
+    return (
+      <span className="text-[#543310] text-[18px] text-center">
+        Error: {error.message}
+      </span>
+    );
   }
 
   // console.log("유저조회페이지 => ", data);
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap h-full gap-4 mt-5">
+      <div className="flex flex-wrap w-full h-screen gap-4 p-3 mt-5">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div
               key={user.uid}
-              className="flex flex-col gap-6 w-[230px] h-[450px] cursor-pointer hover:-translate-y-2 transition "
+              className="flex flex-col gap-6 w-[230px] h-[450px] cursor-pointer hover:-translate-y-2 transition"
             >
               <img
                 src={user.profileImg}

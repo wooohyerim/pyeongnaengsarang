@@ -29,7 +29,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const onClickLogout = async () => {
     try {
       await auth.signOut();
-      alert("로그인 페이지로 이동합니다.");
+      alert("로그아웃되어서 로그인 페이지로 이동합니다.");
       navigate("/login");
     } catch (error) {
       console.log("logout 실패", error);
@@ -41,10 +41,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="w-[500px]">
-      <Header profileUrl={profileUrl} goToMyPage={goToMyPage} />
-      <NavBar onClickLogout={onClickLogout} />
-      <div className="p-3">{children}</div>
+    <div className="bg-white">
+      <section className="w-[500px] mx-auto my-0 bg-[#F8F0E5]">
+        <Header profileUrl={profileUrl} goToMyPage={goToMyPage} />
+        <NavBar onClickLogout={onClickLogout} user={user} />
+        {children}
+      </section>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import MainLayout from "@/components/layout/MainLayout";
 const MainFeed = () => {
   return (
     <MainLayout>
-      <p>MainFeed</p>
+      <div className="w-full h-screen">MainFeed</div>
     </MainLayout>
   );
 };

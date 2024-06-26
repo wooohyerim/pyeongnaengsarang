@@ -1,11 +1,5 @@
 import { create } from "zustand";
-
-interface User {
-  uid: string;
-  photoURL: string | null;
-  email: string | null;
-  displayName: string | null;
-}
+import { User } from "@/types";
 
 interface UserState {
   user: User | null;

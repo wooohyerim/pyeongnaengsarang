@@ -18,7 +18,7 @@ function App() {
         <Route path="/signup" element={<SignupForm />} />
         <Route path="main" element={<MainFeed />} />
         <Route path="user" element={<UserList />} />
-        <Route path="mypage" element={<MyPage />} />
+        <Route path="mypage/:nickname" element={<MyPage />} />
         <Route path="detail" element={<FeedDetail />} />
         <Route path="post" element={<Post />} />
       </Routes>

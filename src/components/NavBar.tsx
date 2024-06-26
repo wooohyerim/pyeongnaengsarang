@@ -1,21 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "./common/Button";
+import { User } from "@/types";
 
 interface NavBarProps {
   onClickLogout: () => void;
+  user: User | null;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
-  // const navigate = useNavigate();
+const NavBar: React.FC<NavBarProps> = ({ onClickLogout, user }) => {
+  // console.log(user);
+
+  const navigate = useNavigate();
+
   const NAVIGATE_LIST = [
-    { title: "Home", href: "/main" },
-    { title: "Users", href: "/user" },
-    { title: "Mypage", href: "/mypage" },
+    { title: "Home", navigate: "/main", prams: "" },
+    { title: "Users", navigate: "/user", prams: "" },
+    {
+      title: "Mypage",
+      navigate: `/mypage/${user?.displayName}`,
+      params: user?.displayName,
+    },
   ];
 
   return (
-    <nav className="fixed bottom-0 flex items-center  w-[500px] h-[70px] p-4 bg-[#D1BB9E]">
+    <nav className="fixed bottom-0 flex items-center w-[500px] h-[60px] px-4 bg-[#D1BB9E] ">
       {/* <div className="w-full">
         <RiCloseFill
           size={30}
@@ -29,11 +38,17 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
       <ul className="flex w-full gap-4 py-2">
         {NAVIGATE_LIST.map((item) => {
           return (
-            <Link to={item.href} key={item.title}>
-              <li className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition">
-                {item.title}
-              </li>
-            </Link>
+            <li
+              key={item.title}
+              onClick={() =>
+                navigate(item.navigate, {
+                  state: { displayName: user?.displayName },
+                })
+              }
+              className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"
+            >
+              {item.title}
+            </li>
           );
         })}
       </ul>
