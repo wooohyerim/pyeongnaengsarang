@@ -5,10 +5,10 @@ import { User } from "@/types";
 
 interface NavBarProps {
   onClickLogout: () => void;
-  user: User | null;
+  // user: User | null;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ onClickLogout, user }) => {
+const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
   // console.log(user);
 
   const navigate = useNavigate();
@@ -16,11 +16,11 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout, user }) => {
   const NAVIGATE_LIST = [
     { title: "Home", navigate: "/main", prams: "" },
     { title: "Users", navigate: "/user", prams: "" },
-    {
-      title: "Mypage",
-      navigate: `/mypage/${user?.displayName}`,
-      params: user?.displayName,
-    },
+    // {
+    //   title: "Mypage",
+    //   navigate: `/mypage/${user?.displayName}`,
+    //   params: user?.displayName,
+    // },
   ];
 
   return (
@@ -32,7 +32,7 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout, user }) => {
               key={item.title}
               onClick={() =>
                 navigate(item.navigate, {
-                  state: { displayName: user?.displayName },
+                  // state: { displayName: user?.displayName },
                 })
               }
               className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"

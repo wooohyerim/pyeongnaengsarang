@@ -47,7 +47,7 @@ const UserList = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-between gap-4 p-4 mt-3">
+      <div className="flex flex-wrap justify-between h-screen gap-4 p-3">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div
@@ -57,15 +57,15 @@ const UserList = () => {
               <img
                 src={user.profileImg}
                 alt="img"
-                className="w-[210px] h-[220px] object-cover rounded-xl"
+                className="w-[210px] min-h-[220px] object-cover rounded-xl"
               />
-              <div className="flex flex-col gap-2 p-1">
+              <div className="flex flex-col gap-2 p-1 w-full h-[110px] overflow-auto">
                 <span className="text-[#74512D] font-IBMSemibold">
                   {user.nickname}
                 </span>
                 <p
-                  className="w-full h-[100px] text-[14px] text-[#A79277]
-                line-clamp-5"
+                  className=" text-[14px] text-[#A79277]
+                line-clamp-3 text-ellipsis"
                 >
                   {user.bio}
                 </p>

@@ -9,7 +9,7 @@ interface HeaderProps {
   goToMyPage: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ profileUrl, goToMyPage }) => {
+const Header: React.FC<HeaderProps> = ({ goToMyPage, profileUrl }) => {
   const navigate = useNavigate();
 
   return (

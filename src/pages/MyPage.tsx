@@ -7,6 +7,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
 
 const MyPage = () => {
+  // const user = localStorage.getItem("user");
   const user = auth.currentUser;
   const location = useLocation();
 
@@ -20,9 +21,11 @@ const MyPage = () => {
   return (
     <MainLayout>
       <div className="w-full h-screen">
-        <div>
-          <label htmlFor="profile"></label>
-          <input type="file" id="profile" />
+        <div className="w-[210px] h-[210px] rounded-full">
+          <label htmlFor="profile">
+            <img src="" alt="" />
+          </label>
+          <input type="file" id="profile" className="hidden" />
         </div>
         <div>
           <label>Name</label>

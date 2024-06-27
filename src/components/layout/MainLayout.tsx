@@ -18,10 +18,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         // console.log(user);
         setIsLogin(true);
         setProfileUrl(user.photoURL || "");
+        // localStorage.setItem("user", JSON.stringify(user));
       } else {
         console.log("로그아웃");
         setIsLogin(false);
         setProfileUrl("");
+        // localStorage.removeItem("user");
       }
     });
   }, [user]);
@@ -41,10 +43,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="relative bg-white">
       <section className="w-[500px] mx-auto my-0 bg-[#F8F0E5]">
         <Header profileUrl={profileUrl} goToMyPage={goToMyPage} />
-        <NavBar onClickLogout={onClickLogout} user={user} />
+        {/* <NavBar onClickLogout={onClickLogout} user={user} /> */}
+        {/* <Header goToMyPage={goToMyPage} /> */}
+        <NavBar onClickLogout={onClickLogout} />
         {children}
       </section>
     </div>

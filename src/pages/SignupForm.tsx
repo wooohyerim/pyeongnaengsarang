@@ -1,22 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { auth, db, storage } from "@/firebase/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { FirebaseError } from "firebase/app";
-
+import { SignUpValues } from "@/types";
 import Button from "@/components/common/Button";
-
-type FormValues = {
-  // image: File[];
-  image: File[];
-  name: string;
-  nickname: string;
-  email: string;
-  password: string;
-  bio: string;
-};
+import { signUpSubmit } from "@/api/auth";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -24,44 +11,13 @@ const SignupForm = () => {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<SignUpValues>();
 
-  const profileImg = watch("image");
-
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: SignUpValues) => {
     try {
-      const credential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-      const user = credential.user;
-      // console.log(user);
-
-      // 프로필 이미지 storage 업로드, url collection 저장
-      const file = profileImg[0];
-      const fileRef = ref(storage, `${user.uid}/${file.name}`);
-      await uploadBytes(fileRef, file);
-
-      const downloadURL = await getDownloadURL(fileRef);
-
-      await updateProfile(user, {
-        displayName: data.nickname,
-        photoURL: downloadURL,
-      });
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        profileImg: downloadURL,
-        email: user.email,
-        name: data.name,
-        nickname: user.displayName,
-        bio: data.bio,
-        password: data.password,
-        createAt: Timestamp.fromDate(new Date()),
-      });
+      await signUpSubmit(data);
       alert("가입에 성공했습니다.");
       reset();
       navigate("/login");
