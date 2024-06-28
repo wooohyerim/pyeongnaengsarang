@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
@@ -9,12 +10,9 @@ import { getUserProfile } from "@/hooks/getUserData";
 const MyPage = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
-  const location = useLocation();
-
-  // console.log("현재 로그인 된 유저 uid => ", user);
+  const [isClick, setIsClick] = useState(false);
 
   const { nickname } = useParams();
-  // const displayName = location.state.displayName;
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -72,16 +70,16 @@ const MyPage = () => {
           <div className="flex flex-col gap-2  justify-between w-[300px]">
             <label className="text-[12px] text-[#74512D]">닉네임</label>
             <input
-              className="w-full h-[50px] p-2 text-[#543310] outline-none bg-[#EAD8C0] rounded-xl"
+              className="w-full h-[50px] p-2  text-[#543310] outline-none bg-white rounded-xl border"
               type="text"
               {...register("nickname")}
             />
           </div>
-          <div className="flex flex-col  justify-between w-[300px] h-[150px]  line-clamp-3 text-ellipsis">
+          <div className="flex flex-col gap-2 w-[300px] h-[150px] line-clamp-3 text-ellipsis">
             <label className="text-[12px] text-[#74512D]">자기소개</label>
             <textarea
               {...register("bio")}
-              className="w-full h-[110px] p-2 bg-[#EAD8C0] rounded-xl outline-none resize-none line-clamp-4 text-[#543310]"
+              className="w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden  text-[#543310]"
             ></textarea>
           </div>
           <div className="flex w-[300px] gap-6">

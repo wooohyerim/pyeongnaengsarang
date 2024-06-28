@@ -39,8 +39,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="relative bg-white">
-      <section className="w-[500px] mx-auto my-0 bg-[#F8F0E5]">
+    <div className="relative bg-[#F8F0E5]">
+      <section className="w-[500px] mx-auto my-0 bg-white">
         <Header />
         <NavBar onClickLogout={onClickLogout} />
 

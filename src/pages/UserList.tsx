@@ -36,12 +36,12 @@ const UserList = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-between h-screen gap-4 p-3">
+      <div className="flex flex-wrap justify-between min-h-[760px] gap-4 p-3">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div
               key={user.uid}
-              className="flex flex-col gap-4 w-[210px] h-[350px] cursor-pointer bg-white rounded-xl shadow-md"
+              className="flex flex-col gap-4 w-[210px] h-[350px] cursor-pointer bg-white rounded-xl shadow-lg"
             >
               <img
                 src={user.profileImg}

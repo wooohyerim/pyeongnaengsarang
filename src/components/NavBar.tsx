@@ -29,11 +29,7 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
           return (
             <li
               key={item.title}
-              onClick={() =>
-                navigate(item.navigate, {
-                  state: { displayName: user?.displayName },
-                })
-              }
+              onClick={() => navigate(item.navigate)}
               className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"
             >
               {item.title}
