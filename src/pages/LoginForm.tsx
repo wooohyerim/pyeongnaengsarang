@@ -1,11 +1,11 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { User } from "firebase/auth";
+import { User, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
 import { AuthValues } from "@/types";
 import Button from "@/components/common/Button";
 import { useUserState } from "@/store/useUserState";
-import { signInWithEmail } from "@/api/auth";
+import { saveGoogleUser, signInWithEmail } from "@/api/auth";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -33,6 +33,21 @@ const LoginForm = () => {
     } catch (error) {
       console.error("Login failed: ", error);
       alert("로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
+    }
+  };
+
+  // 구글 로그인
+  const signInGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const data = await signInWithPopup(auth, provider);
+      const user = data.user;
+      setUser(user);
+      await saveGoogleUser(user);
+      navigate("/main");
+      return user;
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -91,8 +106,12 @@ const LoginForm = () => {
           )}
         </div>
         <div className="flex flex-col gap-4 mt-8">
-          <Button className={""} type={"submit"} title={"로그인"} />
-          {/* <Button className={""} type={"button"} title={"구글 로그인"} /> */}
+          <Button type={"submit"} title={"로그인"} />
+          <Button
+            onClick={signInGoogle}
+            type={"button"}
+            title={"구글 로그인"}
+          />
         </div>
       </form>
       <div className=" w-full p-4 gap-4 text-[#D1BB9E] text-center text-[14px]">

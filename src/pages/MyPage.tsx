@@ -6,6 +6,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
 import { useUserState } from "@/store/useUserState";
 import { getUserProfile } from "@/hooks/getUserData";
+import { cn } from "@/lib/utils";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -47,10 +48,10 @@ const MyPage = () => {
     <MainLayout>
       <section className=" w-full min-h-[760px] pt-4">
         <form className="flex flex-col items-center justify-evenly gap-4 min-h-[600px]">
-          <div className="w-[200px] h-[200px] rounded-full">
+          <div className="w-[150px] h-[150px] rounded-full">
             <label htmlFor="profile">
               <img
-                className="rounded-full"
+                className={cn("rounded-full", data?.providerId && "w-full")}
                 src={
                   user?.photoURL
                     ? user?.photoURL

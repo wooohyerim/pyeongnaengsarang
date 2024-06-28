@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { setDoc, collection, doc, Timestamp } from "firebase/firestore";
+import { setDoc, doc, Timestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { AuthValues, SignUpValues } from "@/types";
 
@@ -60,4 +60,21 @@ export const signInWithEmail = async ({
     password
   );
   return userCredential.user;
+};
+
+// google 로그인 유저 정보 저장
+export const saveGoogleUser = async (user: User): Promise<void> => {
+  try {
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      profileImg: user.photoURL,
+      email: user.email,
+      nickname: user.displayName,
+      providerId: user.providerId,
+      createdAt: Timestamp.fromDate(new Date()),
+      bio: "안녕하세요. 구글 로그인 테스트 하고 있습니다.",
+    });
+  } catch (error) {
+    alert(error);
+  }
 };

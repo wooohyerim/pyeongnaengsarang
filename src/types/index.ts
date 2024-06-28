@@ -25,3 +25,12 @@ export interface SignUpValues {
   password: string;
   bio: string;
 }
+
+export interface GoogleUser {
+  uid: string;
+  photoURL: string | null;
+  email: string | null;
+  nickname: string | null;
+  bio?: string | null;
+  providerId: string | null;
+}
