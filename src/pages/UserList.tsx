@@ -1,12 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/MainLayout";
 import { getAllUserData } from "@/hooks/getUserData";
+import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users"],
     queryFn: getAllUserData,
   });
+
+  console.log(data);
+
+  const navigate = useNavigate();
+  // const displayName = data
 
   if (isLoading) {
     return (
@@ -41,6 +47,7 @@ const UserList = () => {
           data.map((user) => (
             <div
               key={user.uid}
+              onClick={() => navigate(`/mypage/${user.nickname}`)}
               className="flex flex-col gap-4 w-[210px] h-[350px] cursor-pointer bg-white rounded-xl shadow-lg"
             >
               <img
