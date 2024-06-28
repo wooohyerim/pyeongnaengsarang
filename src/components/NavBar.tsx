@@ -1,26 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./common/Button";
-import { User } from "@/types";
+import { useUserState } from "@/store/useUserState";
 
 interface NavBarProps {
   onClickLogout: () => void;
-  // user: User | null;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
   // console.log(user);
-
+  const { user } = useUserState();
   const navigate = useNavigate();
 
   const NAVIGATE_LIST = [
     { title: "Home", navigate: "/main", prams: "" },
     { title: "Users", navigate: "/user", prams: "" },
-    // {
-    //   title: "Mypage",
-    //   navigate: `/mypage/${user?.displayName}`,
-    //   params: user?.displayName,
-    // },
+    {
+      title: "Mypage",
+      navigate: `/mypage/${user?.displayName}`,
+      params: user?.displayName,
+    },
   ];
 
   return (
@@ -32,7 +31,7 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
               key={item.title}
               onClick={() =>
                 navigate(item.navigate, {
-                  // state: { displayName: user?.displayName },
+                  state: { displayName: user?.displayName },
                 })
               }
               className="w-full h-[30px] text-[18px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"

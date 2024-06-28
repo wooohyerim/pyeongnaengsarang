@@ -1,49 +1,99 @@
-import React, { useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { auth } from "@/firebase/firebase";
-
 import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
+import { useUserState } from "@/store/useUserState";
+import { getUserProfile } from "@/hooks/getUserData";
 
 const MyPage = () => {
-  // const user = localStorage.getItem("user");
-  const user = auth.currentUser;
+  const navigate = useNavigate();
+  const { user } = useUserState();
   const location = useLocation();
 
-  const { nickname } = useParams();
-  const displayName = location.state.displayName;
+  // console.log("현재 로그인 된 유저 uid => ", user);
 
-  console.log(user);
-  console.log("params => ", nickname);
-  console.log("네비게이션으로 넘어온 state => ", displayName);
+  const { nickname } = useParams();
+  // const displayName = location.state.displayName;
+
+  const { register, handleSubmit, setValue } = useForm();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users", user?.uid],
+    queryFn: () => getUserProfile(user?.uid || ""),
+    enabled: !!user?.uid,
+  });
+
+  // console.log("query로 문서에서 불러온 데이터 => ", data);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    console.error("Error fetching user data:", error);
+    return <p>Error loading data</p>;
+  }
+
+  if (data) {
+    setValue("nickname", data.nickname || "");
+    setValue("bio", data.bio || "");
+    setValue("image", data.photoURL || "");
+  }
+
+  // console.log("Mypage => ", user);
+  // console.log("params => ", nickname);
+  // console.log("네비게이션으로 넘어온 state => ", displayName);
 
   return (
     <MainLayout>
-      <div className="w-full h-screen">
-        <div className="w-[210px] h-[210px] rounded-full">
-          <label htmlFor="profile">
-            <img src="" alt="" />
-          </label>
-          <input type="file" id="profile" className="hidden" />
-        </div>
-        <div>
-          <label>Name</label>
-          <input type="text" />
-        </div>
-        <div>
-          <label>Nickname</label>
-          <input type="text" />
-        </div>
-        <div>
-          <label>Comment</label>
-          <input type="text" />
-        </div>
-        <div>
-          <Button type="button" className="" title="돌아가기" />
-          <Button type="button" className="" title="수정하기" />
-        </div>
-      </div>
+      <section className=" w-full min-h-[760px] pt-4">
+        <form className="flex flex-col items-center justify-evenly gap-4 min-h-[600px]">
+          <div className="w-[200px] h-[200px] rounded-full">
+            <label htmlFor="profile">
+              <img
+                className="rounded-full"
+                src={
+                  user?.photoURL
+                    ? user?.photoURL
+                    : "/src/assets/image/profile_user.png"
+                }
+                alt="img"
+              />
+            </label>
+            <input
+              {...register("image")}
+              type="file"
+              id="profile"
+              className="hidden"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2  justify-between w-[300px]">
+            <label className="text-[12px] text-[#74512D]">닉네임</label>
+            <input
+              className="w-full h-[50px] p-2 text-[#543310] outline-none bg-[#EAD8C0] rounded-xl"
+              type="text"
+              {...register("nickname")}
+            />
+          </div>
+          <div className="flex flex-col  justify-between w-[300px] h-[150px]  line-clamp-3 text-ellipsis">
+            <label className="text-[12px] text-[#74512D]">자기소개</label>
+            <textarea
+              {...register("bio")}
+              className="w-full h-[110px] p-2 bg-[#EAD8C0] rounded-xl outline-none resize-none line-clamp-4 text-[#543310]"
+            ></textarea>
+          </div>
+          <div className="flex w-[300px] gap-6">
+            <Button
+              onClick={() => navigate(-1)}
+              type="button"
+              title="돌아가기"
+            />
+            <Button type="submit" title="수정하기" />
+          </div>
+        </form>
+      </section>
     </MainLayout>
   );
 };

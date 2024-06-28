@@ -155,14 +155,13 @@ const SignupForm = () => {
           <label className="text-[#636363] text-[12px]">
             자기소개 & 인사말 *
           </label>
-          <input
+          <textarea
             {...register("bio", {
               minLength: 3,
               required: "자기소개&인사말을 입력해주세요.",
             })}
-            className="w-full h-[150px] p-4 border-none bg-white outline-none rounded-xl"
-            type="text"
-          />
+            className="w-full h-[150px] p-4 border-none  bg-white outline-none rounded-xl"
+          ></textarea>
           {errors.bio && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
               {errors.bio.message}

@@ -1,22 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { db } from "@/firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
 import MainLayout from "@/components/layout/MainLayout";
+import { getAllUserData } from "@/hooks/getUserData";
 
 const UserList = () => {
-  // users 문서에 저장된 모든 유저 가져오기
-  const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const users = querySnapshot.docs.map((doc) => ({
-      ...doc.data(), // 배열로 저장
-    }));
-    return users;
-  };
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users"],
-    queryFn: getData,
-    // staleTime: Infinity,
+    queryFn: getAllUserData,
   });
 
   if (isLoading) {

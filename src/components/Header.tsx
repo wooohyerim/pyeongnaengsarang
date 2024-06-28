@@ -1,16 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "./common/Button";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUserState } from "@/store/useUserState";
 
-interface HeaderProps {
-  profileUrl: string;
-  goToMyPage: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ goToMyPage, profileUrl }) => {
+const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useUserState();
+  const photoURL = user?.photoURL;
 
   return (
     <header className="flex items-center justify-between w-full h-12 p-3  border-x-0 border border-b-[#B1ABAB]">
@@ -21,9 +17,12 @@ const Header: React.FC<HeaderProps> = ({ goToMyPage, profileUrl }) => {
         ㅍㄴㅅㄹ
       </h1>
 
-      <Avatar onClick={goToMyPage}>
-        <AvatarImage src={profileUrl} />
-        <AvatarFallback>profile</AvatarFallback>
+      <Avatar>
+        {photoURL ? (
+          <AvatarImage src={photoURL} />
+        ) : (
+          <AvatarFallback>profile</AvatarFallback>
+        )}
       </Avatar>
     </header>
   );

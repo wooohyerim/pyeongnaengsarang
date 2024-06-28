@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { setDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { AuthValues, SignUpValues } from "@/types";
 
@@ -32,7 +32,7 @@ export const signUpSubmit = async (data: SignUpValues): Promise<User> => {
     });
 
     // 사용자 데이터 Firestore에 저장
-    await addDoc(collection(db, "users"), {
+    await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       profileImg: downloadURL,
       email: user.email,
