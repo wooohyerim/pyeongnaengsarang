@@ -17,8 +17,8 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
     { title: "Users", navigate: "/user", prams: "" },
     {
       title: "Mypage",
-      navigate: `/mypage/${user?.displayName}`,
-      params: user?.displayName,
+      navigate: `/mypage/${user?.uid}`,
+      params: user?.uid,
     },
   ];
 

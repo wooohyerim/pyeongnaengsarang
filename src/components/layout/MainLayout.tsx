@@ -6,7 +6,7 @@ import { useUserState } from "@/store/useUserState";
 import { auth } from "@/firebase/firebase";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { setIsLogin, setUser } = useUserState();
+  const { setIsLogin, setUser, user } = useUserState();
   const navigate = useNavigate();
 
   // 현재 유저 확인
@@ -26,7 +26,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         setIsLogin(false);
       }
     });
-  }, []);
+  }, [setUser]);
 
   const onClickLogout = async () => {
     try {

@@ -45,7 +45,7 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="flex flex-col w-[450px] h-full my-6 mx-auto p-3">
+    <div className="flex flex-col w-[500px] h-full my-0 mx-auto p-3 bg-[#F8F0E5]">
       <span
         onClick={() => navigate(-1)}
         className="w-[30px] text-[24px] font-bold text-[#543310] cursor-pointer lg:hidden"
@@ -53,7 +53,7 @@ const SignupForm = () => {
         &lt;{" "}
       </span>
       <h1 className=" mb-6 text-center text-[36px] text-[#543310] font-IBMSemibold ">
-        ㅍㄴㅅㄹ 가입
+        회원가입
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}

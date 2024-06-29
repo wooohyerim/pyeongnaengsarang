@@ -34,3 +34,9 @@ export interface GoogleUser {
   bio?: string | null;
   providerId: string | null;
 }
+
+export interface UpdateUserValue {
+  image?: File[];
+  nickname?: string;
+  bio?: string;
+}
