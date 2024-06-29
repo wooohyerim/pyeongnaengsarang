@@ -1,32 +1,51 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Header";
-import NavBar from "../NavBar";
+import { useQuery } from "@tanstack/react-query";
+import { updateProfile } from "firebase/auth";
 import { useUserState } from "@/store/useUserState";
 import { auth } from "@/firebase/firebase";
+import Header from "../Header";
+import NavBar from "../NavBar";
+import { getUserProfile } from "@/hooks/getUserData";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { setIsLogin, setUser, user } = useUserState();
+  const { setIsLogin, setUser } = useUserState();
   const navigate = useNavigate();
+  const user = auth.currentUser;
+  // console.log(user);
+
+  const { data } = useQuery({
+    queryKey: ["users", user?.uid],
+    queryFn: () => getUserProfile(user?.uid || ""),
+    enabled: !!user?.uid,
+  });
+  // console.log("query data => ", data);
 
   // 현재 유저 확인
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (user) {
         // console.log("onAuthStateChanged => ", user);
+
+        // data 정보로 user 업데이트
+        await updateProfile(user, {
+          photoURL: data?.profileImg,
+          displayName: data?.nickname,
+        });
+
         setIsLogin(true);
         setUser({
-          uid: user.uid,
-          email: user.email || "",
-          displayName: user.displayName || "",
-          photoURL: user.photoURL || "",
+          uid: user?.uid,
+          email: user?.email || "",
+          displayName: user?.displayName || "",
+          photoURL: user?.photoURL || "",
         });
       } else {
         console.log("로그아웃");
         setIsLogin(false);
       }
     });
-  }, [setUser]);
+  }, [data]);
 
   const onClickLogout = async () => {
     try {

@@ -8,6 +8,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
 import { UpdateUserValue } from "@/types";
 import { updateUser } from "@/api/user";
+import { useEffect } from "react";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ const MyPage = () => {
 
   const currentUserId = user?.uid;
 
-  const { register, setValue, handleSubmit } = useForm<UpdateUserValue>();
+  const { register, setValue, handleSubmit, watch } =
+    useForm<UpdateUserValue>();
 
   // 로그인 한 유저 정보 가져오기
   const {
@@ -40,7 +42,7 @@ const MyPage = () => {
 
   // 현재 유저
   const data = currentUserId === user?.uid ? currentUser : otherUser;
-  console.log(data);
+  // console.log(data);
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -75,14 +77,14 @@ const MyPage = () => {
       <section className=" w-full min-h-[760px] pt-4">
         <form
           onSubmit={handleSubmit(onUpdateProfile)}
-          className="flex flex-col items-center justify-evenly gap-4 min-h-[600px]"
+          className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"
         >
-          <div className="w-[150px] h-[150px] rounded-full">
+          <div className="flex flex-col items-center justify-between  w-[200px] h-[200px]">
             <label htmlFor="profile">
               <img
                 className={cn(
-                  "rounded-full",
-                  otherUser?.providerId && "w-full"
+                  "rounded-full w-[165px] h-[170px]",
+                  uid !== data?.uid && "w-[180px] h-[180px] "
                 )}
                 src={
                   uid !== data?.uid ? otherUser?.profileImg : data?.profileImg
@@ -94,7 +96,10 @@ const MyPage = () => {
               {...register("image")}
               type="file"
               id="profile"
-              className="hidden"
+              className={cn(
+                "w-full text-[14px] text-[#636363]",
+                uid !== data?.uid && "hidden"
+              )}
               disabled={uid !== data?.uid}
             />
           </div>
