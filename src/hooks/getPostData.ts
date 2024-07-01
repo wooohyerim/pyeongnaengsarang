@@ -1,17 +1,22 @@
-import { db } from "@/firebase/firebase";
+import { auth, db } from "@/firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
+
+interface Post {
+  postId: number;
+  uid: string;
+  nickname: string;
+  photoURL: File[];
+  title: string;
+  content: string;
+  createdAt: Date;
+}
 
 // users 문서에 저장된 모든 유저 가져오기
 export const getAllPostData = async () => {
   const usersSnapshot = await getDocs(collection(db, "users"));
 
-  const allPosts: any = [];
-  // const querySnapshot = await getDocs(
-  //   collection(db, "users", user?.uid || "", "posts")
-  // );
-  // const postData = querySnapshot.docs.map((doc) => ({
-  //   ...doc.data(), // 배열로 저장
-  // }));
+  const allPosts: Post[] = [];
+
   for (const userDoc of usersSnapshot.docs) {
     const userId = userDoc.id; // 유저의 ID
 
@@ -21,10 +26,15 @@ export const getAllPostData = async () => {
     );
 
     postsCollection.forEach((postDoc) => {
+      const postIdNumber = parseInt(postDoc.id, 10);
       allPosts.push({
-        userId, // 유저 ID 포함
-        postId: postDoc.id, // 포스트 ID 포함
-        ...postDoc.data(),
+        postId: postIdNumber,
+        uid: postDoc.data().uid,
+        nickname: postDoc.data().nickname,
+        photoURL: postDoc.data().photoURL,
+        title: postDoc.data().title,
+        content: postDoc.data().content,
+        createdAt: postDoc.data().createdAt,
       });
     });
   }
