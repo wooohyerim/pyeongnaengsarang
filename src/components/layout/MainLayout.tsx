@@ -59,8 +59,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="">
       <section className=" w-[500px] mx-auto my-0 bg-white border border-s-[#dadada] border-y-0  shadow-inner">
-        <Header />
-        <NavBar onClickLogout={onClickLogout} />
+        <Header onClickLogout={onClickLogout} />
+        <NavBar />
         {children}
       </section>
     </div>

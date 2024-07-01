@@ -19,7 +19,7 @@ function App() {
         <Route path="user" element={<UserList />} />
         <Route path="mypage/:uid" element={<MyPage />} />
         <Route path="detail" element={<FeedDetail />} />
-        <Route path="post" element={<Post />} />
+        <Route path="post/:uid" element={<Post />} />
       </Routes>
     </Router>
   );

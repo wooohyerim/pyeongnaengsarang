@@ -2,8 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserState } from "@/store/useUserState";
+import Button from "./common/Button";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onClickLogout: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onClickLogout }) => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const photoURL = user?.photoURL;
@@ -16,14 +21,21 @@ const Header: React.FC = () => {
       >
         ㅍㄴㅅㄹ
       </h1>
-
-      <Avatar>
-        {photoURL ? (
-          <AvatarImage src={photoURL} />
-        ) : (
-          <AvatarFallback>profile</AvatarFallback>
-        )}
-      </Avatar>
+      <div className="flex gap-4">
+        <Avatar>
+          {photoURL ? (
+            <AvatarImage src={photoURL} />
+          ) : (
+            <AvatarFallback>profile</AvatarFallback>
+          )}
+        </Avatar>
+        <Button
+          title="로그아웃"
+          type="button"
+          className=" text-[#543310] text-[12px] font-bold "
+          onClick={onClickLogout}
+        />
+      </div>
     </header>
   );
 };
