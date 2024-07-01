@@ -23,7 +23,7 @@ const NavBar: React.FC<NavBarProps> = ({ onClickLogout }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 flex items-center justify-between w-[500px] h-[60px] px-4 bg-[#D1BB9E] ">
+    <nav className="fixed bottom-0  flex items-center justify-between w-[500px] h-[55px] px-4 bg-[#D1BB9E] border border-x-[#dadada] border-y-0">
       <ul className="flex gap-4 py-2 ">
         {NAVIGATE_LIST.map((item) => {
           return (

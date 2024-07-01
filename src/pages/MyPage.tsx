@@ -8,7 +8,6 @@ import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
 import { UpdateUserValue } from "@/types";
 import { updateUser } from "@/api/user";
-import { useEffect } from "react";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -75,7 +74,7 @@ const MyPage = () => {
 
   return (
     <MainLayout>
-      <section className=" w-full min-h-[760px] pt-4">
+      <section className=" w-full min-h-[700px] pt-4">
         <form
           onSubmit={handleSubmit(onUpdateProfile)}
           className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"

@@ -12,7 +12,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { setIsLogin, setUser } = useUserState();
   const navigate = useNavigate();
   const user = auth.currentUser;
-  // console.log(user);
 
   const { data } = useQuery({
     queryKey: ["users", user?.uid],
@@ -58,11 +57,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="relative bg-[#F8F0E5]">
-      <section className="w-[500px] mx-auto my-0 bg-white">
+    <div className="">
+      <section className=" w-[500px] mx-auto my-0 bg-white border border-s-[#dadada] border-y-0  shadow-inner">
         <Header />
         <NavBar onClickLogout={onClickLogout} />
-
         {children}
       </section>
     </div>
