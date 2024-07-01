@@ -60,8 +60,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="">
       <section className=" w-[500px] mx-auto my-0 bg-white border border-s-[#dadada] border-y-0  shadow-inner">
         <Header onClickLogout={onClickLogout} />
-        <NavBar />
+
         {children}
+        <NavBar />
       </section>
     </div>
   );

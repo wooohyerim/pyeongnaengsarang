@@ -16,8 +16,7 @@ const MyPage = () => {
 
   const currentUserId = user?.uid;
 
-  const { register, setValue, handleSubmit, watch } =
-    useForm<UpdateUserValue>();
+  const { register, setValue, handleSubmit } = useForm<UpdateUserValue>();
 
   // 로그인 한 유저 정보 가져오기
   const {
@@ -74,7 +73,7 @@ const MyPage = () => {
 
   return (
     <MainLayout>
-      <section className=" w-full min-h-[700px] pt-4">
+      <section className="w-full h-[720px] pt-8 ">
         <form
           onSubmit={handleSubmit(onUpdateProfile)}
           className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"

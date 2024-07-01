@@ -65,7 +65,7 @@ const SignupForm = () => {
           </label>{" "}
           <input
             type={"file"}
-            accept=".gif, .jpg, .png, .pdf, .jpeg"
+            accept=" .jpg, .png, .jpeg"
             {...register("image", { required: "이미지를 등록해주세요." })}
             id={"image"}
             className="text-[14px] text-[#636363]"

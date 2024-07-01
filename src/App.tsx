@@ -15,11 +15,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="main" element={<MainFeed />} />
-        <Route path="user" element={<UserList />} />
-        <Route path="mypage/:uid" element={<MyPage />} />
-        <Route path="detail" element={<FeedDetail />} />
-        <Route path="post/:uid" element={<Post />} />
+        <Route path="/main" element={<MainFeed />} />
+        <Route path="/user" element={<UserList />} />
+        <Route path="/mypage/:uid" element={<MyPage />} />
+        <Route path="/detail" element={<FeedDetail />} />
+        <Route path="/post" element={<Post />} />
       </Routes>
     </Router>
   );
