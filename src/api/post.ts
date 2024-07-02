@@ -5,10 +5,9 @@ import {
   Timestamp,
   collection,
   addDoc,
-  runTransaction,
+  updateDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-runTransaction;
 
 interface PostValue {
   image?: File[] | undefined;
@@ -34,36 +33,17 @@ export const createPost = async (data: PostValue) => {
       imageUrl = await getDownloadURL(fileRef);
     }
 
-    // postId
-    const postRef = collection(db, "users", userId || "", "posts");
-    const postId = await runTransaction(db, async (transaction) => {
-      // Get the current postId from a separate document (acting as a counter)
-      const postCounterDocRef = doc(db, "postCounters", user?.uid || "");
-      const postCounterDoc = await transaction.get(postCounterDocRef);
-
-      let currentPostId = 1;
-
-      if (postCounterDoc.exists()) {
-        // If the counter document exists, get the current postId and increment
-        currentPostId = postCounterDoc.data().currentPostId + 1;
-      }
-
-      // Set the incremented postId back to the counter document
-      transaction.set(postCounterDocRef, { currentPostId });
-
-      return currentPostId;
-    });
-
     // post 데이터 Firestore에 저장
-    await setDoc(doc(postRef), {
-      postId,
+    const postRef = await addDoc(collection(db, "posts"), {
       uid: userId,
       nickname: user?.displayName,
       photoURL: imageUrl,
       title: data.title,
       content: data.content,
-      createAt: Timestamp.fromDate(new Date()),
+      createdAt: Timestamp.fromDate(new Date()),
     });
+    await updateDoc(postRef, { id: postRef.id }); // post id
+    return postRef.id;
   } catch (error) {
     console.log(error);
   }

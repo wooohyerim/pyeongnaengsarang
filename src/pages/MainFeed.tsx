@@ -21,7 +21,7 @@ const MainFeed = () => {
     queryFn: getAllPostData,
   });
 
-  // console.log("postData => ", data);
+  console.log("postData => ", data);
 
   if (isLoading) {
     return (
@@ -52,7 +52,7 @@ const MainFeed = () => {
         {data && data.length > 0 ? (
           data.map((posts: PostValue) => (
             <div
-              key={posts.title}
+              key={posts.postId}
               className="flex flex-col gap-4 w-[230px] h-[300px] cursor-pointer bg-white rounded-xl border shadow-md"
             >
               {posts.photoURL ? (
@@ -66,7 +66,7 @@ const MainFeed = () => {
               )}
               <div
                 className={cn(
-                  "w-full h-[100px] p-1 bg-slate-300",
+                  "w-full h-[100px] p-1",
                   !posts.photoURL && "w-full h-[400px] p-1 rounded-t-xl"
                 )}
               >
@@ -79,7 +79,7 @@ const MainFeed = () => {
                 </p>
                 <span
                   className={cn(
-                    "text-[14px] text-[#A79277] text-ellipsis line-clamp-3"
+                    "text-[14px] text-[#A79277] text-ellipsis line-clamp-3 text-balance"
                   )}
                 >
                   {posts.content}

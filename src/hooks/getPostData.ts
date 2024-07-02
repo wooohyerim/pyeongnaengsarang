@@ -13,30 +13,22 @@ interface Post {
 
 // users 문서에 저장된 모든 유저 가져오기
 export const getAllPostData = async () => {
-  const usersSnapshot = await getDocs(collection(db, "users"));
-
   const allPosts: Post[] = [];
 
-  for (const userDoc of usersSnapshot.docs) {
-    const userId = userDoc.id; // 유저의 ID
+  // 각 유저의 포스트 컬렉션을 가져오기
+  const postsCollection = await getDocs(collection(db, "posts"));
 
-    // 각 유저의 포스트 컬렉션을 가져오기
-    const postsCollection = await getDocs(
-      collection(db, "users", userId, "posts")
-    );
-
-    postsCollection.forEach((postDoc) => {
-      const postIdNumber = parseInt(postDoc.id, 10);
-      allPosts.push({
-        postId: postIdNumber,
-        uid: postDoc.data().uid,
-        nickname: postDoc.data().nickname,
-        photoURL: postDoc.data().photoURL,
-        title: postDoc.data().title,
-        content: postDoc.data().content,
-        createdAt: postDoc.data().createdAt,
-      });
+  postsCollection.forEach((postDoc) => {
+    allPosts.push({
+      postId: postDoc.data().id,
+      uid: postDoc.data().uid,
+      nickname: postDoc.data().nickname,
+      photoURL: postDoc.data().photoURL,
+      title: postDoc.data().title,
+      content: postDoc.data().content,
+      createdAt: postDoc.data().createdAt,
     });
-  }
+  });
+  allPosts.sort((a: any, b: any) => b.createdAt - a.createdAt);
   return allPosts;
 };
