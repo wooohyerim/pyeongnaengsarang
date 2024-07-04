@@ -29,7 +29,7 @@ const UserList = () => {
   if (isError) {
     return (
       <MainLayout>
-        <div className="w-full h-screen">
+        <div className="w-full h-[screen]">
           <span className="text-[#543310] text-[18px] text-center">
             Error: {error.message}
           </span>
@@ -42,7 +42,7 @@ const UserList = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-between h-screen gap-4 px-8 py-3">
+      <div className="flex flex-wrap justify-between min-h-[750px] gap-4 px-8 py-3">
         {data && data.length > 0 ? (
           data.map((user) => (
             <div

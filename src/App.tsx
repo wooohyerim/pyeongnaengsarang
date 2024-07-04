@@ -18,7 +18,7 @@ function App() {
         <Route path="/main" element={<MainFeed />} />
         <Route path="/user" element={<UserList />} />
         <Route path="/mypage/:uid" element={<MyPage />} />
-        <Route path="/detail" element={<FeedDetail />} />
+        <Route path="/detail/:postId" element={<FeedDetail />} />
         <Route path="/post" element={<Post />} />
       </Routes>
     </Router>

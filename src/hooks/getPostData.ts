@@ -1,5 +1,5 @@
 import { auth, db } from "@/firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 
 interface Post {
   postId: number;
@@ -31,4 +31,17 @@ export const getAllPostData = async () => {
   });
   allPosts.sort((a: any, b: any) => b.createdAt - a.createdAt);
   return allPosts;
+};
+
+// posts 문서에서 id에 따른 유저 문서 가져오기
+export const getUserPost = async (id: string) => {
+  const postsDocRef = doc(db, "posts", id);
+  const postDoc = await getDoc(postsDocRef);
+
+  if (postDoc.exists()) {
+    const userData = postDoc.data();
+    return userData;
+  } else {
+    console.log("User does not exist for uid:", id);
+  }
 };
