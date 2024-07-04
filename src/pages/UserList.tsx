@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/MainLayout";
 import { getAllUserData } from "@/hooks/getUserData";
 import { useNavigate } from "react-router-dom";
+import Loading from "@/components/Loading";
+import Error from "@/components/Error";
 
 const UserList = () => {
   const { data, isLoading, isError, error } = useQuery({
@@ -15,27 +17,11 @@ const UserList = () => {
   // const displayName = data
 
   if (isLoading) {
-    return (
-      <MainLayout>
-        <div className="w-full h-screen">
-          <span className="text-[#543310] text-[18px] text-center">
-            Loading...
-          </span>
-        </div>
-      </MainLayout>
-    );
+    return <Loading />;
   }
 
   if (isError) {
-    return (
-      <MainLayout>
-        <div className="w-full h-[screen]">
-          <span className="text-[#543310] text-[18px] text-center">
-            Error: {error.message}
-          </span>
-        </div>
-      </MainLayout>
-    );
+    return <Error error={error} />;
   }
 
   // console.log("유저조회페이지 => ", data);

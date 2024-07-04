@@ -1,11 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseMutationResult,
+} from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-
+import { auth, db } from "@/firebase/firebase";
+import { getUserPost, getDeletePost } from "@/hooks/getPostData";
+import Loading from "@/components/Loading";
 import Button from "@/components/common/Button";
 import MainLayout from "@/components/layout/MainLayout";
-import { auth } from "@/firebase/firebase";
-import { getUserPost, getAllPostData } from "@/hooks/getPostData";
+import Error from "@/components/Error";
+import { deleteDoc, doc, collection } from "firebase/firestore";
 
 const FeedDetail = () => {
   const user = auth.currentUser;
@@ -24,32 +31,52 @@ const FeedDetail = () => {
     enabled: !!postId,
   });
 
-  const { data: allPost } = useQuery({
-    queryKey: ["allPosts"],
-    queryFn: getAllPostData,
-  });
-
-  // console.log(allPost);
-
-  // const otherPost = allPost?.find((post) => post?.postId == postId);
-
-  // console.log(otherPost);
-
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    console.error("Error fetching user data:", error);
-
-    return <p>Error loading data</p>;
+    return <Error error={error} />;
   }
+
+  // const queryClient = useQueryClient();
+
+  // const mutation: UseMutationResult<void, Error, string> = useMutation(
+  //   getDeletePost,
+  //   {
+  //     onSuccess: () => {
+  //       // Invalidate or refetch queries to update the UI after deletion
+  //       queryClient.invalidateQueries(["allPosts"]);
+  //     },
+  //     onError: (error: Error) => {
+  //       console.error("Failed to delete the post:", error);
+  //       alert("Failed to delete the post. Please try again.");
+  //     },
+  //   }
+  // );
+
+  // const handleDelete = (postId: string): void => {
+  //   mutation.mutate(postId);
+  // };
+
+  const handleClickDelete = async (postId: string) => {
+    try {
+      const confirm = window.confirm("게시글을 삭제하시겠습니까?");
+
+      if (confirm) {
+        await getDeletePost(postId);
+        navigate("/main");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // console.log("current post => ", currentPost);
 
   return (
     <MainLayout>
-      <section className="flex flex-col w-full h-screen gap-4 p-4">
+      <section className="z-20 flex flex-col w-full min-h-[710px] gap-4 p-4">
         <span>
           <MdOutlineArrowBackIosNew
             style={{ cursor: "pointer" }}
@@ -81,7 +108,11 @@ const FeedDetail = () => {
           <div className="bg-slate-200 min-h-[150px]">댓글 자리</div>
           {currentPost?.uid === user?.uid && (
             <div className="flex gap-6 ">
-              <Button title="삭제하기" />
+              <Button
+                title="삭제하기"
+                onClick={() => handleClickDelete(postId || "")}
+                type="button"
+              />
               <Button title="수정하기" />
             </div>
           )}

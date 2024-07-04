@@ -8,6 +8,8 @@ import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
 import { UpdateUserValue } from "@/types";
 import { updateUser } from "@/api/user";
+import Loading from "@/components/Loading";
+import Error from "@/components/Error";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -42,12 +44,11 @@ const MyPage = () => {
   const data = currentUserId === user?.uid ? currentUser : otherUser;
   // console.log(data);
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    console.error("Error fetching user data:", error);
-    return <p>Error loading data</p>;
+    return <Error />;
   }
 
   if (uid === data?.uid) {
