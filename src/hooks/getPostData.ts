@@ -1,4 +1,4 @@
-import { auth, db } from "@/firebase/firebase";
+import { auth, db, storage } from "@/firebase/firebase";
 import {
   collection,
   getDocs,
@@ -27,51 +27,15 @@ interface GetPostDataResult {
 }
 
 // users 문서에 저장된 모든 유저 가져오기
-// export const getAllPostData = async () => {
-//   const allPosts: Post[] = [];
-
-//   // 각 유저의 포스트 컬렉션을 가져오기
-//   const postsCollection = await getDocs(collection(db, "posts"));
-
-//   postsCollection.forEach((postDoc) => {
-//     allPosts.push({
-//       postId: postDoc.data().id,
-//       uid: postDoc.data().uid,
-//       nickname: postDoc.data().nickname,
-//       photoURL: postDoc.data().photoURL,
-//       title: postDoc.data().title,
-//       content: postDoc.data().content,
-//       createdAt: postDoc.data().createdAt,
-//     });
-//   });
-//   allPosts.sort((a: any, b: any) => b.createdAt - a.createdAt);
-//   return allPosts;
-// };
-
-export const getAllPostData = async (
-  page = 1,
-  cursor: any = null
-): Promise<GetPostDataResult> => {
+export const getAllData = async () => {
   const allPosts: Post[] = [];
-  const postsRef = collection(db, "posts");
-  let postsQuery;
 
-  if (cursor) {
-    postsQuery = query(
-      postsRef,
-      orderBy("createdAt", "desc"),
-      startAfter(cursor),
-      limit(3)
-    );
-  } else {
-    postsQuery = query(postsRef, orderBy("createdAt", "desc"), limit(3));
-  }
+  // 각 유저의 포스트 컬렉션을 가져오기
+  const postsCollection = await getDocs(collection(db, "posts"));
 
-  const postsSnapshot = await getDocs(postsQuery);
-
-  postsSnapshot.forEach((postDoc) => {
+  postsCollection.forEach((postDoc) => {
     allPosts.push({
-      postId: postDoc.id,
+      postId: postDoc.data().id,
       uid: postDoc.data().uid,
       nickname: postDoc.data().nickname,
       photoURL: postDoc.data().photoURL,
@@ -80,13 +44,8 @@ export const getAllPostData = async (
       createdAt: postDoc.data().createdAt,
     });
   });
-
-  let nextCursor = null;
-  if (!postsSnapshot.empty) {
-    nextCursor = postsSnapshot.docs[postsSnapshot.docs.length - 1];
-  }
-
-  return { data: allPosts, nextCursor };
+  allPosts.sort((a: any, b: any) => b.createdAt - a.createdAt);
+  return allPosts;
 };
 
 // posts 문서에서 id에 따른 유저 문서 가져오기
@@ -100,10 +59,4 @@ export const getUserPost = async (id: string) => {
   } else {
     console.log("User does not exist for uid:", id);
   }
-};
-
-export const getDeletePost = async (postId: string): Promise<void> => {
-  const postRef = doc(db, "posts", postId);
-
-  await deleteDoc(postRef);
 };

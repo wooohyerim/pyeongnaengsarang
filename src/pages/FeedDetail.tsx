@@ -1,24 +1,38 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseMutationResult,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import { auth, db } from "@/firebase/firebase";
-import { getUserPost, getDeletePost } from "@/hooks/getPostData";
+import { auth } from "@/firebase/firebase";
+import { getUserPost, getAllData } from "@/hooks/getPostData";
 import Loading from "@/components/Loading";
 import Button from "@/components/common/Button";
 import MainLayout from "@/components/layout/MainLayout";
 import Error from "@/components/Error";
-import { deleteDoc, doc, collection } from "firebase/firestore";
+import { cn } from "@/lib/utils";
+import { deletePost, updatePost } from "@/api/post";
+import { CiImageOn } from "react-icons/ci";
+
+interface PostValue {
+  image?: File[];
+  title?: string;
+  content?: string;
+}
 
 const FeedDetail = () => {
   const user = auth.currentUser;
   // console.log("feed 현재 유저=> ", user);
   const { postId } = useParams();
   const navigate = useNavigate();
+
+  const { register, handleSubmit, setValue, watch } = useForm<PostValue>();
+  // const [previewImg, setPreviewImg] = useState("");
+  // const preview = watch("image");
+  // useEffect(() => {
+  //   if (preview && preview.length > 0) {
+  //     const file = preview[0];
+  //     setPreviewImg(URL.createObjectURL(file));
+  //   }
+  // }, [preview]);
 
   // postId에 따라 정보 가져오기
   const {
@@ -31,6 +45,28 @@ const FeedDetail = () => {
     enabled: !!postId,
   });
 
+  // 모든 유저 가져오기
+  const { data: allPost } = useQuery({
+    queryKey: ["allUser", user?.uid],
+    queryFn: getAllData,
+  });
+
+  const otherPost = allPost?.find((post) => post.postId === postId);
+
+  // 현재 포스트
+  const data = postId === currentPost?.postId ? currentPost : otherPost;
+  // console.log(data);
+
+  if (postId === data?.postId) {
+    setValue("title", data?.title);
+    setValue("content", data?.content);
+    setValue("image", data?.photoURL);
+  } else {
+    setValue("title", otherPost?.title);
+    setValue("content", otherPost?.content);
+    setValue("image", otherPost?.photoURL);
+  }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -39,34 +75,23 @@ const FeedDetail = () => {
     return <Error error={error} />;
   }
 
-  // const queryClient = useQueryClient();
-
-  // const mutation: UseMutationResult<void, Error, string> = useMutation(
-  //   getDeletePost,
-  //   {
-  //     onSuccess: () => {
-  //       // Invalidate or refetch queries to update the UI after deletion
-  //       queryClient.invalidateQueries(["allPosts"]);
-  //     },
-  //     onError: (error: Error) => {
-  //       console.error("Failed to delete the post:", error);
-  //       alert("Failed to delete the post. Please try again.");
-  //     },
-  //   }
-  // );
-
-  // const handleDelete = (postId: string): void => {
-  //   mutation.mutate(postId);
-  // };
-
   const handleClickDelete = async (postId: string) => {
     try {
       const confirm = window.confirm("게시글을 삭제하시겠습니까?");
-
       if (confirm) {
-        await getDeletePost(postId);
+        await deletePost(postId, currentPost?.photoURL);
         navigate("/main");
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickUpdate = async (data: PostValue) => {
+    try {
+      await updatePost(data, postId || "");
+      alert("수정이 완료되었습니다.");
+      window.location.replace("/main");
     } catch (error) {
       console.log(error);
     }
@@ -83,27 +108,97 @@ const FeedDetail = () => {
             onClick={() => navigate("/main")}
           />
         </span>
-        <form className="flex flex-col gap-8">
-          {currentPost?.photoURL !== "" ? (
-            <div className="w-[450px] h-[250px]">
-              <img
-                className="object-cover w-full h-full"
-                src={currentPost?.photoURL}
-                alt="img"
+        <form
+          onSubmit={handleSubmit(handleClickUpdate)}
+          className="flex flex-col gap-6"
+        >
+          {data?.photoURL !== "" ? (
+            <div className="flex flex-col w-full h-[250px] gap-1">
+              <label htmlFor="postImg" className="w-full h-full ">
+                {/* {preview && preview.length > 0 ? (
+                  <img
+                    className="object-cover w-full h-full"
+                    src={previewImg}
+                    alt="img"
+                  />
+                ) : ( */}
+                <img
+                  className="object-cover w-full h-[230px]"
+                  // src={currentPost?.photoURL}
+                  src={
+                    postId !== data?.postId
+                      ? otherPost?.photoURL
+                      : data?.photoURL
+                  }
+                  alt="img"
+                />
+                {/* )} */}
+              </label>
+              <input
+                type="file"
+                {...register("image")}
+                id="postImg"
+                className="w-full text-[14px] text-[#636363] hidden"
               />
             </div>
-          ) : null}
-
-          <div>
-            <h1 className="text-[28px] text-[#543310] font-bold">
-              {currentPost?.title}
-            </h1>
-            <span className="text-[14px] text-[#A79277] pl-1">
+          ) : (
+            <div className="w-full h-[250px]">
+              <label
+                htmlFor="postImg"
+                className="flex flex-col gap-4 w-full h-full items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
+              >
+                {/* {preview && preview.length > 0 ? (
+                  <img
+                    className="object-cover w-full h-full"
+                    src={previewImg}
+                    alt="img"
+                  />
+                ) : (
+                  <> */}{" "}
+                <CiImageOn size={50} style={{ color: "gray" }} />
+                <span className="text-[14px] text-[#cecece]">
+                  이미지 업로드
+                </span>{" "}
+                {/* </>
+                )} */}
+              </label>
+              <input
+                type="file"
+                {...register("image")}
+                id="postImg"
+                className={cn("w-full text-[14px] text-[#636363] hidden")}
+              />
+            </div>
+          )}
+          {/* <FeedImg
+            data={data}
+            postId={postId}
+            otherPost={otherPost}
+            user={user}
+          /> */}
+          <div className="flex flex-col">
+            <input
+              type="text"
+              {...register("title")}
+              className={cn(
+                "w-full  text-[28px] text-[#543310] font-bold outline-none",
+                user?.uid !== data?.uid && "bg-white"
+              )}
+              disabled={user?.uid !== data?.uid}
+            />
+            <span className="text-[12px] text-[#A79277]">
               {currentPost?.nickname}
             </span>
           </div>
-          <div className="h-[120px] pl-1  text-[#74512D]">
-            {currentPost?.content}
+          <div className="w-full h-[200px] bg-slate-50 text-[15px] text-[#74512D]">
+            <textarea
+              {...register("content")}
+              className={cn(
+                "w-full h-full outline-none text-pretty resize-none ",
+                user?.uid !== data?.uid && " bg-white"
+              )}
+              disabled={user?.uid !== data?.uid}
+            ></textarea>
           </div>
           <div className="bg-slate-200 min-h-[150px]">댓글 자리</div>
           {currentPost?.uid === user?.uid && (
@@ -113,7 +208,7 @@ const FeedDetail = () => {
                 onClick={() => handleClickDelete(postId || "")}
                 type="button"
               />
-              <Button title="수정하기" />
+              <Button title="수정하기" type="submit" />
             </div>
           )}
         </form>

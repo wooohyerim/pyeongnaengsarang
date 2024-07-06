@@ -40,3 +40,9 @@ export interface UpdateUserValue {
   nickname?: string;
   bio?: string;
 }
+
+export interface PostValue {
+  image?: File[] | undefined;
+  title: string;
+  content: string;
+}

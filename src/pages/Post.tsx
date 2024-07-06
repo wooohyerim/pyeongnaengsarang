@@ -5,12 +5,13 @@ import { FaImage } from "react-icons/fa6";
 import Button from "@/components/common/Button";
 import MainLayout from "@/components/layout/MainLayout";
 import { createPost } from "@/api/post";
+import { PostValue } from "@/types";
 
-interface PostValue {
-  image?: File[] | undefined;
-  title: string;
-  content: string;
-}
+// interface PostValue {
+//   image?: File[] | undefined;
+//   title: string;
+//   content: string;
+// }
 
 const Post = () => {
   const [previewImg, setPreviewImg] = useState("");
