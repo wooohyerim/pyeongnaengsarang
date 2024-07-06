@@ -3,17 +3,18 @@ import { cn } from "@/lib/utils";
 import { CiImageOn } from "react-icons/ci";
 import { DocumentData } from "firebase/firestore";
 import { useForm } from "react-hook-form";
-import { User } from "@/types";
+import { PostValue, User } from "@/types";
 
 interface FeedImgProp {
   data: DocumentData | undefined;
   postId: string | undefined;
-  otherPost: DocumentData | undefined;
+  otherPost: PostValue | undefined;
   user: User | null;
 }
 
 const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
   const [previewImg, setPreviewImg] = useState<string>("");
+
   const { register, watch } = useForm();
   // 이미지 업로드 시 미리 보여주는 effect
   const preview = watch("image");
@@ -29,22 +30,22 @@ const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
       {data?.photoURL !== "" ? (
         <div className="flex flex-col w-full h-[250px] gap-1">
           <label htmlFor="postImg" className="w-full h-full ">
-            {/* {preview && preview.length > 0 ? (
+            {preview && preview.length > 0 ? (
               <img
                 className="object-cover w-full h-full"
                 src={previewImg}
                 alt="img"
               />
-            ) : ( */}
-            <img
-              className="object-cover w-full h-[230px]"
-              // src={currentPost?.photoURL}
-              src={
-                postId !== data?.postId ? otherPost?.photoURL : data?.photoURL
-              }
-              alt="img"
-            />
-            {/* )} */}
+            ) : (
+              <img
+                className="object-cover w-full h-[230px]"
+                // src={currentPost?.photoURL}
+                src={
+                  postId !== data?.postId ? otherPost?.image : data?.photoURL
+                }
+                alt="img"
+              />
+            )}
           </label>
           <input
             type="file"

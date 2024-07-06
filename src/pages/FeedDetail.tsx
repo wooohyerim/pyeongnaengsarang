@@ -10,7 +10,9 @@ import MainLayout from "@/components/layout/MainLayout";
 import Error from "@/components/Error";
 import { cn } from "@/lib/utils";
 import { deletePost, updatePost } from "@/api/post";
-import { CiImageOn } from "react-icons/ci";
+import FeedImg from "@/components/FeedImg";
+import Comment from "@/components/Comment";
+// import { CiImageOn } from "react-icons/ci";
 
 interface PostValue {
   image?: File[];
@@ -23,16 +25,7 @@ const FeedDetail = () => {
   // console.log("feed 현재 유저=> ", user);
   const { postId } = useParams();
   const navigate = useNavigate();
-
-  const { register, handleSubmit, setValue, watch } = useForm<PostValue>();
-  // const [previewImg, setPreviewImg] = useState("");
-  // const preview = watch("image");
-  // useEffect(() => {
-  //   if (preview && preview.length > 0) {
-  //     const file = preview[0];
-  //     setPreviewImg(URL.createObjectURL(file));
-  //   }
-  // }, [preview]);
+  const { register, handleSubmit, setValue } = useForm<PostValue>();
 
   // postId에 따라 정보 가져오기
   const {
@@ -108,23 +101,19 @@ const FeedDetail = () => {
             onClick={() => navigate("/main")}
           />
         </span>
+
         <form
           onSubmit={handleSubmit(handleClickUpdate)}
           className="flex flex-col gap-6"
         >
           {data?.photoURL !== "" ? (
-            <div className="flex flex-col w-full h-[250px] gap-1">
-              <label htmlFor="postImg" className="w-full h-full ">
-                {/* {preview && preview.length > 0 ? (
-                  <img
-                    className="object-cover w-full h-full"
-                    src={previewImg}
-                    alt="img"
-                  />
-                ) : ( */}
+            <div className="flex flex-col w-full h-[270px] gap-2">
+              <label htmlFor="postImg" className="w-full">
                 <img
-                  className="object-cover w-full h-[230px]"
-                  // src={currentPost?.photoURL}
+                  className={cn(
+                    "object-cover w-full h-[230px]",
+                    user?.uid !== data?.uid && "h-[250px]"
+                  )}
                   src={
                     postId !== data?.postId
                       ? otherPost?.photoURL
@@ -132,44 +121,36 @@ const FeedDetail = () => {
                   }
                   alt="img"
                 />
-                {/* )} */}
               </label>
               <input
                 type="file"
                 {...register("image")}
                 id="postImg"
-                className="w-full text-[14px] text-[#636363] hidden"
+                className={cn(
+                  "w-full text-[12px] text-[#636363]",
+                  user?.uid !== data?.uid && "hidden"
+                )}
               />
             </div>
-          ) : (
-            <div className="w-full h-[250px]">
+          ) : user?.uid === data?.uid ? (
+            <div className="w-full">
               <label
                 htmlFor="postImg"
-                className="flex flex-col gap-4 w-full h-full items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
+                className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
               >
-                {/* {preview && preview.length > 0 ? (
-                  <img
-                    className="object-cover w-full h-full"
-                    src={previewImg}
-                    alt="img"
-                  />
-                ) : (
-                  <> */}{" "}
-                <CiImageOn size={50} style={{ color: "gray" }} />
+                {/* <CiImageOn size={50} style={{ color: "gray" }} />
                 <span className="text-[14px] text-[#cecece]">
                   이미지 업로드
-                </span>{" "}
-                {/* </>
-                )} */}
+                </span>{" "} */}
               </label>
               <input
                 type="file"
                 {...register("image")}
                 id="postImg"
-                className={cn("w-full text-[14px] text-[#636363] hidden")}
+                className={cn("w-full text-[14px] text-[#636363]")}
               />
             </div>
-          )}
+          ) : null}
           {/* <FeedImg
             data={data}
             postId={postId}
@@ -200,7 +181,9 @@ const FeedDetail = () => {
               disabled={user?.uid !== data?.uid}
             ></textarea>
           </div>
-          <div className="bg-slate-200 min-h-[150px]">댓글 자리</div>
+          <div className="bg-slate-200 min-h-[150px]">
+            <Comment />
+          </div>
           {currentPost?.uid === user?.uid && (
             <div className="flex gap-6 ">
               <Button

@@ -4,11 +4,11 @@ import {
   getDocs,
   doc,
   getDoc,
-  query,
-  orderBy,
-  limit,
-  startAfter,
-  deleteDoc,
+  // query,
+  // orderBy,
+  // limit,
+  // startAfter,
+  // deleteDoc,
 } from "firebase/firestore";
 
 interface Post {
