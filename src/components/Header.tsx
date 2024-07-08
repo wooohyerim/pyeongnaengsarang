@@ -3,15 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserState } from "@/store/useUserState";
 import Button from "./common/Button";
+import { auth } from "@/firebase/firebase";
 
-interface HeaderProps {
-  onClickLogout: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ onClickLogout }) => {
+const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const photoURL = user?.photoURL;
+  const onClickLogout = async () => {
+    try {
+      await auth.signOut();
+      alert("로그아웃되어서 로그인 페이지로 이동합니다.");
+      navigate("/login");
+    } catch (error) {
+      console.log("logout 실패", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 flex items-center justify-between w-[498px] h-[50px] bg-white p-3 border border-s-[#dadada] border-x-0 border-t-0 shadow-sm">

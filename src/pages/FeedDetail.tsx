@@ -181,9 +181,9 @@ const FeedDetail = () => {
               disabled={user?.uid !== data?.uid}
             ></textarea>
           </div>
-          <div className="bg-slate-200 min-h-[150px]">
-            <Comment />
-          </div>
+
+          <Comment />
+
           {currentPost?.uid === user?.uid && (
             <div className="flex gap-6 ">
               <Button
