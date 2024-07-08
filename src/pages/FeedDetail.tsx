@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { auth } from "@/firebase/firebase";
 import { getUserPost, getAllData } from "@/hooks/getPostData";
@@ -25,6 +25,7 @@ const FeedDetail = () => {
   // console.log("feed 현재 유저=> ", user);
   const { postId } = useParams();
   const navigate = useNavigate();
+  const methods = useForm();
   const { register, handleSubmit, setValue } = useForm<PostValue>();
 
   // postId에 따라 정보 가져오기
@@ -101,100 +102,101 @@ const FeedDetail = () => {
             onClick={() => navigate("/main")}
           />
         </span>
-
-        <form
-          onSubmit={handleSubmit(handleClickUpdate)}
-          className="flex flex-col gap-6"
-        >
-          {data?.photoURL !== "" ? (
-            <div className="flex flex-col w-full h-[270px] gap-2">
-              <label htmlFor="postImg" className="w-full">
-                <img
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(handleClickUpdate)}
+            className="flex flex-col gap-6"
+          >
+            {data?.photoURL !== "" ? (
+              <div className="flex flex-col w-full h-[270px] gap-2">
+                <label htmlFor="postImg" className="w-full">
+                  <img
+                    className={cn(
+                      "object-cover w-full h-[230px]",
+                      user?.uid !== data?.uid && "h-[250px]"
+                    )}
+                    src={
+                      postId !== data?.postId
+                        ? otherPost?.photoURL
+                        : data?.photoURL
+                    }
+                    alt="img"
+                  />
+                </label>
+                <input
+                  type="file"
+                  {...register("image")}
+                  id="postImg"
                   className={cn(
-                    "object-cover w-full h-[230px]",
-                    user?.uid !== data?.uid && "h-[250px]"
+                    "w-full text-[12px] text-[#636363]",
+                    user?.uid !== data?.uid && "hidden"
                   )}
-                  src={
-                    postId !== data?.postId
-                      ? otherPost?.photoURL
-                      : data?.photoURL
-                  }
-                  alt="img"
                 />
-              </label>
-              <input
-                type="file"
-                {...register("image")}
-                id="postImg"
-                className={cn(
-                  "w-full text-[12px] text-[#636363]",
-                  user?.uid !== data?.uid && "hidden"
-                )}
-              />
-            </div>
-          ) : user?.uid === data?.uid ? (
-            <div className="w-full">
-              <label
-                htmlFor="postImg"
-                className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
-              >
-                {/* <CiImageOn size={50} style={{ color: "gray" }} />
+              </div>
+            ) : user?.uid === data?.uid ? (
+              <div className="w-full">
+                <label
+                  htmlFor="postImg"
+                  className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
+                >
+                  {/* <CiImageOn size={50} style={{ color: "gray" }} />
                 <span className="text-[14px] text-[#cecece]">
                   이미지 업로드
                 </span>{" "} */}
-              </label>
-              <input
-                type="file"
-                {...register("image")}
-                id="postImg"
-                className={cn("w-full text-[14px] text-[#636363]")}
-              />
-            </div>
-          ) : null}
-          {/* <FeedImg
+                </label>
+                <input
+                  type="file"
+                  {...register("image")}
+                  id="postImg"
+                  className={cn("w-full text-[14px] text-[#636363]")}
+                />
+              </div>
+            ) : null}
+            {/* <FeedImg
             data={data}
             postId={postId}
             otherPost={otherPost}
             user={user}
           /> */}
-          <div className="flex flex-col">
-            <input
-              type="text"
-              {...register("title")}
-              className={cn(
-                "w-full  text-[28px] text-[#543310] font-bold outline-none",
-                user?.uid !== data?.uid && "bg-white"
-              )}
-              disabled={user?.uid !== data?.uid}
-            />
-            <span className="text-[12px] text-[#A79277]">
-              {currentPost?.nickname}
-            </span>
-          </div>
-          <div className="w-full h-[200px] bg-slate-50 text-[15px] text-[#74512D]">
-            <textarea
-              {...register("content")}
-              className={cn(
-                "w-full h-full outline-none text-pretty resize-none ",
-                user?.uid !== data?.uid && " bg-white"
-              )}
-              disabled={user?.uid !== data?.uid}
-            ></textarea>
-          </div>
-
-          <Comment />
-
-          {currentPost?.uid === user?.uid && (
-            <div className="flex gap-6 ">
-              <Button
-                title="삭제하기"
-                onClick={() => handleClickDelete(postId || "")}
-                type="button"
+            <div className="flex flex-col">
+              <input
+                type="text"
+                {...register("title")}
+                className={cn(
+                  "w-full  text-[28px] text-[#543310] font-bold outline-none",
+                  user?.uid !== data?.uid && "bg-white"
+                )}
+                disabled={user?.uid !== data?.uid}
               />
-              <Button title="수정하기" type="submit" />
+              <span className="text-[12px] text-[#A79277]">
+                {currentPost?.nickname}
+              </span>
             </div>
-          )}
-        </form>
+            <div className="w-full min-h-[150px] text-[15px] text-[#74512D]">
+              <textarea
+                {...register("content")}
+                className={cn(
+                  "w-full min-h-[150px] outline-none text-pretty resize-none",
+                  user?.uid !== data?.uid && " bg-white"
+                )}
+                disabled={user?.uid !== data?.uid}
+              ></textarea>
+            </div>
+
+            <Comment postId={postId} />
+
+            {currentPost?.uid === user?.uid && (
+              <div className="flex gap-6 ">
+                <Button
+                  title="삭제하기"
+                  onClick={() => handleClickDelete(postId || "")}
+                  type="button"
+                />
+                <Button title="수정하기" type="submit" />
+              </div>
+            )}
+          </form>
+        </FormProvider>
       </section>
     </MainLayout>
   );
