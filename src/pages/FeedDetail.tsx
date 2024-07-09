@@ -183,7 +183,7 @@ const FeedDetail = () => {
               ></textarea>
             </div>
 
-            <Comment postId={postId} />
+            <Comment postId={postId} uid={data?.uid} />
 
             {currentPost?.uid === user?.uid && (
               <div className="flex gap-6 ">

@@ -46,3 +46,12 @@ export interface PostValue {
   title: string;
   content: string;
 }
+
+export interface CommentValue {
+  comment_id?: string;
+  comment: string;
+  uid: string;
+  nickname: string;
+  photoURL: string;
+  createAt: Date;
+}
