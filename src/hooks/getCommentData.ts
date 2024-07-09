@@ -16,7 +16,7 @@ export const getPostComment = async (postId: string) => {
       comments.push({
         comment: doc.data().comment,
         comment_id: doc.data().comment_id,
-        createAt: doc.data().createdAt,
+        createdAt: doc.data().createdAt,
         uid: doc.data().uid,
         nickname: doc.data().nickname,
         photoURL: doc.data().photoURL,

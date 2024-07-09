@@ -44,26 +44,17 @@ export const deleteComment = async (
 };
 
 //update comment
-export const updatePost = async (
-  data: CommentValue,
-  comment_id: string,
-  postId: string
-  // downloadURL: string
+export const updateComment = async (
+  modifyComment: string,
+  postId: string,
+  comment_id: string
 ): Promise<void> => {
-  const user = auth.currentUser;
   const commentRef = doc(db, "posts", postId || "", "comments", comment_id);
-  const { comment } = data;
 
-  const currentDoc = await getDoc(commentRef);
-  const currentData = currentDoc.data();
-  console.log("sdfsdf", currentData);
+  const updatedData = {
+    comment: modifyComment,
+    updatedAt: Timestamp.now(),
+  };
 
-  // const updatedData = {
-  //   title: title,
-  //   content: content,
-  //   photoURL: imageUrl,
-  //   updatedAt: Timestamp.now(),
-  // };
-
-  // await updateDoc(postRef, updatedData);
+  await updateDoc(commentRef, updatedData);
 };

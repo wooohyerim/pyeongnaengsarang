@@ -53,5 +53,5 @@ export interface CommentValue {
   uid: string;
   nickname: string;
   photoURL: string;
-  createAt: Date;
+  createdAt: Date;
 }

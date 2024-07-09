@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Button from "./common/Button";
 import { useFormContext } from "react-hook-form";
-import { createComment, deleteComment } from "@/api/comment";
+import { createComment, deleteComment, updateComment } from "@/api/comment";
 import { auth } from "@/firebase/firebase";
 import { CommentValue } from "@/types";
 import { getPostComment } from "@/hooks/getCommentData";
@@ -16,7 +16,6 @@ const Comment = ({ postId, uid }: PropValue) => {
   // props uid => 게시글 쓴 유저의 uid
   const { register, reset, watch, setValue } = useFormContext();
   const user = auth.currentUser;
-  const comment = watch("comment");
 
   const {
     data: commentData,
@@ -29,13 +28,15 @@ const Comment = ({ postId, uid }: PropValue) => {
 
   // console.log("comment => ", commentData);
 
+  // 댓글 등록
   const handleSubmitComment = async () => {
+    const comment = watch("comment");
     const newComment: CommentValue = {
       comment,
       uid: user?.uid || "",
       nickname: user?.displayName || "Anonymous",
       photoURL: user?.photoURL || "",
-      createAt: new Date(),
+      createdAt: new Date(),
     };
 
     try {
@@ -48,6 +49,7 @@ const Comment = ({ postId, uid }: PropValue) => {
     }
   };
 
+  // 댓글 삭제
   const handleClickDelete = async (comment_id: string) => {
     try {
       const confirm = window.confirm("게시글을 삭제하시겠습니까?");
@@ -57,6 +59,18 @@ const Comment = ({ postId, uid }: PropValue) => {
       }
     } catch (error) {
       console.log("delete comment => ", error);
+    }
+  };
+
+  // 댓글 수정
+  const handleClickUpdate = async (comment_id: string) => {
+    const modifyComment = watch(`modifyComment_${comment_id}`);
+
+    try {
+      await updateComment(modifyComment, postId || "", comment_id);
+      window.location.reload();
+    } catch (error) {
+      console.log("comment 수정 error =>", error);
     }
   };
 
@@ -95,16 +109,19 @@ const Comment = ({ postId, uid }: PropValue) => {
                   {list.nickname}
                 </span>
               </div>
-              <div className="flex justify-between w-full gap-2">
-                <textarea
-                  defaultValue={list.comment}
-                  // {...register("comment")}
-                  className={cn(
-                    "text-[14px] resize-none outline-none  w-[400px]",
-                    user?.uid !== list.uid && "bg-white"
-                  )}
-                  disabled={user?.uid !== list.uid}
-                />
+              <div className="flex justify-between w-full gap-1">
+                {user?.uid !== list.uid ? (
+                  <span className="text-[14px] w-[400px]">{list.comment}</span>
+                ) : (
+                  <textarea
+                    defaultValue={list.comment}
+                    {...register(`modifyComment_${list.comment_id}`)}
+                    className={cn(
+                      "text-[14px] resize-none outline-none  w-[400px]"
+                    )}
+                  />
+                )}
+
                 <div className="flex gap-2">
                   {user?.uid === list.uid ? (
                     <>
@@ -115,7 +132,10 @@ const Comment = ({ postId, uid }: PropValue) => {
                       >
                         삭제
                       </span>
-                      <span className="cursor-pointer  text-[14px] text-[#cdcdcd]">
+                      <span
+                        onClick={() => handleClickUpdate(list.comment_id || "")}
+                        className="cursor-pointer  text-[14px] text-[#cdcdcd]"
+                      >
                         수정
                       </span>
                     </>
