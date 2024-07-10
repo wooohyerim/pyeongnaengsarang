@@ -106,6 +106,8 @@ export const updatePost = async (
     imageUrl = await getDownloadURL(snapshot.ref);
   }
 
+  console.log("Current imageUrl:", imageUrl);
+
   const updatedData = {
     title: title,
     content: content,

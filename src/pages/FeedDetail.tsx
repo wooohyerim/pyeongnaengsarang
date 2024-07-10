@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
@@ -19,13 +19,19 @@ interface PostValue {
   content?: string;
 }
 
+interface UpdatePostValue {
+  image?: File[];
+  title?: string;
+  content?: string;
+}
+
 const FeedDetail = () => {
   const user = auth.currentUser;
-  // console.log("feed 현재 유저=> ", user);
   const { postId } = useParams();
   const navigate = useNavigate();
   const methods = useForm();
   const { register, handleSubmit, setValue } = useForm<PostValue>();
+  const queryClient = useQueryClient();
 
   // postId에 따라 정보 가져오기
   const {
@@ -48,7 +54,7 @@ const FeedDetail = () => {
 
   // 현재 포스트
   const data = postId === currentPost?.postId ? currentPost : otherPost;
-  // console.log(data);
+  console.log(data);
 
   if (postId === data?.postId) {
     setValue("title", data?.title);
@@ -60,13 +66,18 @@ const FeedDetail = () => {
     setValue("image", otherPost?.photoURL);
   }
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <Error error={error} />;
-  }
+  const mutation = useMutation({
+    mutationFn: (updateData: { data: PostValue; postId: string }) =>
+      updatePost(updateData.data, updateData.postId),
+    onMutate: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      alert("수정이 완료되었습니다.");
+      navigate("/main");
+    },
+    onError: (error) => {
+      console.log("수정 error => ", error);
+    },
+  });
 
   const handleClickDelete = async (postId: string) => {
     try {
@@ -80,17 +91,27 @@ const FeedDetail = () => {
     }
   };
 
-  const handleClickUpdate = async (data: PostValue) => {
-    try {
-      await updatePost(data, postId || "");
-      alert("수정이 완료되었습니다.");
-      window.location.replace("/main");
-    } catch (error) {
-      console.log(error);
-    }
+  // const handleClickUpdate = async (data: PostValue) => {
+  //   try {
+  //     await updatePost(data, postId || "");
+  //     alert("수정이 완료되었습니다.");
+  //     window.location.replace("/main");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleClickUpdate = (data: UpdatePostValue) => {
+    mutation.mutate({ data, postId: postId || "" });
   };
 
-  // console.log("current post => ", currentPost);
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error error={error} />;
+  }
 
   return (
     <MainLayout>
@@ -130,22 +151,24 @@ const FeedDetail = () => {
                     "w-full text-[12px] text-[#636363]",
                     user?.uid !== data?.uid && "hidden"
                   )}
+                  disabled={user?.uid !== data?.uid}
                 />
               </div>
-            ) : user?.uid === data?.uid ? (
-              <div className="w-full">
-                <label
-                  htmlFor="postImg"
-                  className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
-                ></label>
-                <input
-                  type="file"
-                  {...register("image")}
-                  id="postImg"
-                  className={cn("w-full text-[14px] text-[#636363]")}
-                />
-              </div>
-            ) : null}
+            ) : // : user?.uid === data?.uid ? (
+            //   <div className="w-full">
+            //     <label
+            //       htmlFor="postImg"
+            //       className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
+            //     ></label>
+            //     <input
+            //       type="file"
+            //       {...register("image")}
+            //       id="postImg"
+            //       className={cn("w-full text-[14px] text-[#636363]")}
+            //     />
+            //   </div>
+            // )
+            null}
 
             <div className="flex flex-col">
               <input
@@ -173,7 +196,7 @@ const FeedDetail = () => {
             </div>
 
             <div className="flex items-center gap-1 p-2 mx-auto my-0 border rounded-xl">
-              <FaHeart style={{ cursor: "pointer" }} />
+              <FaHeart style={{ color: "#ff0000", cursor: "pointer" }} />
               <span>count</span>
             </div>
 
