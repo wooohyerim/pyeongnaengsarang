@@ -10,9 +10,8 @@ import MainLayout from "@/components/layout/MainLayout";
 import Error from "@/components/Error";
 import { cn } from "@/lib/utils";
 import { deletePost, updatePost } from "@/api/post";
-import FeedImg from "@/components/FeedImg";
 import Comment from "@/components/Comment";
-// import { CiImageOn } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa";
 
 interface PostValue {
   image?: File[];
@@ -138,12 +137,7 @@ const FeedDetail = () => {
                 <label
                   htmlFor="postImg"
                   className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
-                >
-                  {/* <CiImageOn size={50} style={{ color: "gray" }} />
-                <span className="text-[14px] text-[#cecece]">
-                  이미지 업로드
-                </span>{" "} */}
-                </label>
+                ></label>
                 <input
                   type="file"
                   {...register("image")}
@@ -152,12 +146,7 @@ const FeedDetail = () => {
                 />
               </div>
             ) : null}
-            {/* <FeedImg
-            data={data}
-            postId={postId}
-            otherPost={otherPost}
-            user={user}
-          /> */}
+
             <div className="flex flex-col">
               <input
                 type="text"
@@ -181,6 +170,11 @@ const FeedDetail = () => {
                 )}
                 disabled={user?.uid !== data?.uid}
               ></textarea>
+            </div>
+
+            <div className="flex items-center gap-1 p-2 mx-auto my-0 border rounded-xl">
+              <FaHeart style={{ cursor: "pointer" }} />
+              <span>count</span>
             </div>
 
             <Comment postId={postId} uid={data?.uid} />

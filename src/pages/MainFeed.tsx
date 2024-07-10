@@ -1,38 +1,48 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 import MainLayout from "@/components/layout/MainLayout";
-import { getAllData } from "@/hooks/getPostData";
+import { getAllInfiniteData } from "@/hooks/getPostData";
 import { cn } from "@/lib/utils";
 import { getAllUserData } from "@/hooks/getUserData";
 import Loading from "@/components/Loading";
 import Error from "@/components/Error";
-
-interface PostValue {
-  photoURL?: File[];
-  title: string;
-  content: string;
-  postId: number;
-  uid: string;
-  nickname: string;
-  createdAt: Date;
-}
+import { FaHeart } from "react-icons/fa";
 
 const MainFeed = () => {
   const navigate = useNavigate();
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["allPosts"],
-    queryFn: getAllData,
-  });
 
   const { data: userData } = useQuery({
     queryKey: ["users"],
     queryFn: getAllUserData,
   });
 
-  // console.log(userData);
+  const {
+    data,
+    fetchNextPage,
+    isLoading,
+    error,
+    isError,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["infinityData"],
+    queryFn: getAllInfiniteData,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+  });
 
-  // console.log("postData => ", data);
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return <Loading />;
@@ -43,9 +53,9 @@ const MainFeed = () => {
   }
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-between w-full min-h-[750px] gap-4 px-3 py-4">
-        {data && data.length > 0 ? (
-          data?.map((posts) => {
+      <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
+        {data?.pages.map((page, pageIndex) =>
+          page.data.map((posts) => {
             const postUser = userData?.find((user) => user.uid === posts.uid);
             return (
               <div
@@ -79,7 +89,7 @@ const MainFeed = () => {
                 </div>
                 <div
                   className={cn(
-                    "flex items-center justify-between gap-2 p-2 w-full h-[60px] border",
+                    "flex items-center justify-between gap-2 p-2 w-full h-[50px] border",
                     posts.photoURL && "h-[50px]"
                   )}
                 >
@@ -96,16 +106,17 @@ const MainFeed = () => {
                       {posts.nickname}
                     </span>
                   </div>
-                  {/* 
-                  <span className="text-[12px]">좋아요 위치</span> */}
+
+                  <span className="text-[12px]">
+                    <FaHeart />
+                  </span>
                 </div>
               </div>
             );
           })
-        ) : (
-          <p>피드가 없습니다..</p>
         )}
       </div>
+      <div ref={ref}>{isFetchingNextPage ? "loading..." : ""}</div>
     </MainLayout>
   );
 };

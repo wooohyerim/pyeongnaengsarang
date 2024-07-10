@@ -55,3 +55,9 @@ export interface CommentValue {
   photoURL: string;
   createdAt: Date;
 }
+
+export interface LikePost {
+  uid: string;
+  postId: string;
+  createdAt: Date;
+}
