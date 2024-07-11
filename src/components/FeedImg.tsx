@@ -1,19 +1,26 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CiImageOn } from "react-icons/ci";
-import { DocumentData } from "firebase/firestore";
 import { useForm } from "react-hook-form";
-import { PostValue, User } from "@/types";
+import { auth } from "@/firebase/firebase";
 
 interface FeedImgProp {
-  data: DocumentData | undefined;
+  uid: string;
   postId: string | undefined;
-  otherPost: PostValue | undefined;
-  user: User | null;
+  otherURL: File[] | undefined;
+  photoURL: string | undefined;
+  dataPostId: string;
 }
 
-const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
+const FeedImg = ({
+  uid,
+  postId,
+  otherURL,
+  photoURL,
+  dataPostId,
+}: FeedImgProp) => {
   const [previewImg, setPreviewImg] = useState<string>("");
+  const user = auth.currentUser;
 
   const { register, watch } = useForm();
   // 이미지 업로드 시 미리 보여주는 effect
@@ -25,9 +32,11 @@ const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
     }
   }, [preview]);
 
+  const currentPhotoURL = postId !== dataPostId ? otherURL : photoURL;
+
   return (
     <>
-      {data?.photoURL !== "" ? (
+      {photoURL !== "" ? (
         <div className="flex flex-col w-full h-[250px] gap-1">
           <label htmlFor="postImg" className="w-full h-full ">
             {preview && preview.length > 0 ? (
@@ -40,9 +49,7 @@ const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
               <img
                 className="object-cover w-full h-[230px]"
                 // src={currentPost?.photoURL}
-                src={
-                  postId !== data?.postId ? otherPost?.image : data?.photoURL
-                }
+                src={""}
                 alt="img"
               />
             )}
@@ -53,9 +60,10 @@ const FeedImg = ({ data, postId, otherPost, user }: FeedImgProp) => {
             id="postImg"
             accept=" .jpg, .png, .jpeg"
             className="w-full text-[14px] text-[#636363] hidden"
+            disabled={user?.uid !== uid}
           />
         </div>
-      ) : user?.uid === data?.uid ? (
+      ) : user?.uid === uid ? (
         <div className="w-full h-[250px]">
           <label
             htmlFor="postImg"

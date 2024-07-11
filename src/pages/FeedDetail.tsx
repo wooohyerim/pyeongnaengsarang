@@ -11,7 +11,7 @@ import Error from "@/components/Error";
 import { cn } from "@/lib/utils";
 import { deletePost, updatePost } from "@/api/post";
 import Comment from "@/components/Comment";
-import { FaHeart } from "react-icons/fa";
+import LikeFeed from "@/components/LikeFeed";
 
 interface PostValue {
   image?: File[];
@@ -54,7 +54,7 @@ const FeedDetail = () => {
 
   // 현재 포스트
   const data = postId === currentPost?.postId ? currentPost : otherPost;
-  console.log(data);
+  // console.log(data);
 
   if (postId === data?.postId) {
     setValue("title", data?.title);
@@ -66,18 +66,18 @@ const FeedDetail = () => {
     setValue("image", otherPost?.photoURL);
   }
 
-  const mutation = useMutation({
-    mutationFn: (updateData: { data: PostValue; postId: string }) =>
-      updatePost(updateData.data, updateData.postId),
-    onMutate: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      alert("수정이 완료되었습니다.");
-      navigate("/main");
-    },
-    onError: (error) => {
-      console.log("수정 error => ", error);
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: (updateData: { data: PostValue; postId: string }) =>
+  //     updatePost(updateData.data, updateData.postId),
+  //   onMutate: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["posts"] });
+  //     alert("수정이 완료되었습니다.");
+  //     navigate("/main");
+  //   },
+  //   onError: (error) => {
+  //     console.log("수정 error => ", error);
+  //   },
+  // });
 
   const handleClickDelete = async (postId: string) => {
     try {
@@ -91,19 +91,19 @@ const FeedDetail = () => {
     }
   };
 
-  // const handleClickUpdate = async (data: PostValue) => {
-  //   try {
-  //     await updatePost(data, postId || "");
-  //     alert("수정이 완료되었습니다.");
-  //     window.location.replace("/main");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const handleClickUpdate = (data: UpdatePostValue) => {
-    mutation.mutate({ data, postId: postId || "" });
+  const handleClickUpdate = async (data: PostValue) => {
+    try {
+      await updatePost(data, postId || "");
+      alert("수정이 완료되었습니다.");
+      window.location.replace("/main");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // const handleClickUpdate = (data: UpdatePostValue) => {
+  //   mutation.mutate({ data, postId: postId || "" });
+  // };
 
   if (isLoading) {
     return <Loading />;
@@ -154,22 +154,20 @@ const FeedDetail = () => {
                   disabled={user?.uid !== data?.uid}
                 />
               </div>
-            ) : // : user?.uid === data?.uid ? (
-            //   <div className="w-full">
-            //     <label
-            //       htmlFor="postImg"
-            //       className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
-            //     ></label>
-            //     <input
-            //       type="file"
-            //       {...register("image")}
-            //       id="postImg"
-            //       className={cn("w-full text-[14px] text-[#636363]")}
-            //     />
-            //   </div>
-            // )
-            null}
-
+            ) : user?.uid === data?.uid ? (
+              <div className="w-full">
+                <label
+                  htmlFor="postImg"
+                  className="flex flex-col gap-4  items-center justify-center bg-[#eee] cursor-pointer rounded-xl"
+                ></label>
+                <input
+                  type="file"
+                  {...register("image")}
+                  id="postImg"
+                  className={cn("w-full text-[14px] text-[#636363]")}
+                />
+              </div>
+            ) : null}
             <div className="flex flex-col">
               <input
                 type="text"
@@ -180,9 +178,12 @@ const FeedDetail = () => {
                 )}
                 disabled={user?.uid !== data?.uid}
               />
-              <span className="text-[12px] text-[#A79277]">
-                {currentPost?.nickname}
-              </span>
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[12px] text-[#A79277]">
+                  {currentPost?.nickname}
+                </span>
+                <LikeFeed postId={postId} />
+              </div>
             </div>
             <div className="w-full min-h-[150px] text-[15px] text-[#74512D]">
               <textarea
@@ -194,14 +195,8 @@ const FeedDetail = () => {
                 disabled={user?.uid !== data?.uid}
               ></textarea>
             </div>
-
-            <div className="flex items-center gap-1 p-2 mx-auto my-0 border rounded-xl">
-              <FaHeart style={{ color: "#ff0000", cursor: "pointer" }} />
-              <span>count</span>
-            </div>
-
+            {/* <LikeFeed postId={postId} /> */}
             <Comment postId={postId} uid={data?.uid} />
-
             {currentPost?.uid === user?.uid && (
               <div className="flex gap-6 ">
                 <Button

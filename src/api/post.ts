@@ -7,6 +7,8 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import {
   getDownloadURL,
@@ -106,7 +108,7 @@ export const updatePost = async (
     imageUrl = await getDownloadURL(snapshot.ref);
   }
 
-  console.log("Current imageUrl:", imageUrl);
+  // console.log("Current imageUrl:", imageUrl);
 
   const updatedData = {
     title: title,
@@ -119,4 +121,36 @@ export const updatePost = async (
   // if (downloadURL && downloadURL !== imageUrl) {
   //   await deleteFile(downloadURL);
   // }
+};
+
+// 좋아요 추가
+export const addLike = async (postId: string, userId: string) => {
+  const postRef = doc(db, "posts", postId);
+  await updateDoc(postRef, {
+    likes: arrayUnion(userId),
+  });
+};
+
+// 좋아요 삭제
+export const removeLike = async (postId: string, userId: string) => {
+  const postRef = doc(db, "posts", postId);
+  await updateDoc(postRef, {
+    likes: arrayRemove(userId),
+  });
+};
+
+// 좋아요 정보 가져오기
+export const getLikesInfo = async (postId: string, userId: string) => {
+  const postRef = doc(db, "posts", postId);
+  const postSnap = await getDoc(postRef);
+
+  if (postSnap.exists()) {
+    const likes = postSnap.data().likes;
+    const liked = likes?.includes(userId);
+    const likeCount = likes?.length;
+
+    return { liked, likeCount };
+  }
+
+  return { liked: false, likeCount: 0 };
 };

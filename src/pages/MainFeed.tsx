@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { getAllUserData } from "@/hooks/getUserData";
 import Loading from "@/components/Loading";
 import Error from "@/components/Error";
-import { FaHeart } from "react-icons/fa";
+import LikeFeed from "@/components/LikeFeed";
 
 const MainFeed = () => {
   const navigate = useNavigate();
@@ -51,12 +51,14 @@ const MainFeed = () => {
   if (isError) {
     return <Error error={error} />;
   }
+
   return (
     <MainLayout>
       <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
         {data?.pages.map((page, pageIndex) =>
           page.data.map((posts) => {
             const postUser = userData?.find((user) => user.uid === posts.uid);
+
             return (
               <div
                 key={posts.postId}
@@ -106,10 +108,7 @@ const MainFeed = () => {
                       {posts.nickname}
                     </span>
                   </div>
-
-                  <span className="text-[12px]">
-                    <FaHeart />
-                  </span>
+                  <LikeFeed postId={posts.postId} />
                 </div>
               </div>
             );
