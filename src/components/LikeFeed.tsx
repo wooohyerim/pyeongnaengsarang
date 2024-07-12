@@ -15,19 +15,22 @@ const LikeFeed = ({ postId }: PropType) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (postId && user) {
-      getLikesInfo(postId, user.uid).then(({ liked, likeCount }) => {
+    const fetchLikesInfo = async () => {
+      if (postId && user) {
+        const { liked, likeCount } = await getLikesInfo(postId, user.uid);
         setLiked(liked);
         setLikeCount(likeCount);
-      });
-    }
+      }
+    };
+
+    fetchLikesInfo();
   }, [postId, user]);
 
   const addLikeMutation = useMutation({
     mutationFn: () => addLike(postId || "", user?.uid || ""),
     onSuccess: () => {
       setLiked(true);
-      setLikeCount(likeCount + 1);
+      setLikeCount((count) => count + 1);
       queryClient.invalidateQueries({ queryKey: ["postLikes", postId] });
     },
   });
@@ -36,7 +39,7 @@ const LikeFeed = ({ postId }: PropType) => {
     mutationFn: () => removeLike(postId || "", user?.uid || ""),
     onSuccess: () => {
       setLiked(false);
-      setLikeCount(likeCount - 1);
+      setLikeCount((count) => count - 1);
       queryClient.invalidateQueries({ queryKey: ["postLikes", postId] });
     },
   });
@@ -51,7 +54,7 @@ const LikeFeed = ({ postId }: PropType) => {
 
   return (
     <div className="flex items-center gap-1 px-3 py-1 border rounded-xl ">
-      {liked ? (
+      {likeCount > 0 && liked ? (
         <FaHeart
           style={{ color: "#e5503c", cursor: "pointer" }}
           onClick={handleLike}

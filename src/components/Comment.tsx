@@ -6,6 +6,8 @@ import { auth } from "@/firebase/firebase";
 import { CommentValue } from "@/types";
 import { getPostComment } from "@/hooks/getCommentData";
 import { cn } from "@/lib/utils";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import LikeComment from "./LikeComment";
 
 interface PropValue {
   postId: string | undefined;
@@ -97,17 +99,20 @@ const Comment = ({ postId, uid }: PropValue) => {
         {commentData?.map((list) => {
           return (
             <div key={list.comment_id} className="flex flex-col w-full">
-              <div className="flex items-center">
-                {list && list.photoURL && (
-                  <img
-                    src={list.photoURL}
-                    alt="img"
-                    className="w-[25px] h-[25px] rounded-full mr-2"
-                  />
-                )}
-                <span className="text-[#74512D] text-[14px] font-IBMSemibold">
-                  {list.nickname}
-                </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  {list && list.photoURL && (
+                    <img
+                      src={list.photoURL}
+                      alt="img"
+                      className="w-[25px] h-[25px] rounded-full mr-2"
+                    />
+                  )}
+                  <span className="text-[#74512D] text-[14px] font-IBMSemibold">
+                    {list.nickname}
+                  </span>
+                </div>
+                <LikeComment postId={postId} comment_id={list.comment_id} />
               </div>
               <div className="flex justify-between w-full gap-1">
                 {user?.uid !== list.uid ? (
@@ -134,7 +139,7 @@ const Comment = ({ postId, uid }: PropValue) => {
                       </span>
                       <span
                         onClick={() => handleClickUpdate(list.comment_id || "")}
-                        className="cursor-pointer  text-[14px] text-[#cdcdcd]"
+                        className="cursor-pointer text-[14px] text-[#cdcdcd]"
                       >
                         수정
                       </span>

@@ -7,6 +7,8 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { CommentValue } from "@/types";
 
@@ -57,4 +59,48 @@ export const updateComment = async (
   };
 
   await updateDoc(commentRef, updatedData);
+};
+
+// 좋아요 추가
+export const addLike = async (
+  postId: string,
+  userId: string,
+  comment_id: string
+) => {
+  const commentRef = doc(db, "posts", postId || "", "comments", comment_id);
+  await updateDoc(commentRef, {
+    likes: arrayUnion(userId),
+  });
+};
+
+// 좋아요 삭제
+export const removeLike = async (
+  postId: string,
+  userId: string,
+  comment_id: string
+) => {
+  const commentRef = doc(db, "posts", postId || "", "comments", comment_id);
+  await updateDoc(commentRef, {
+    likes: arrayRemove(userId),
+  });
+};
+
+// 좋아요 정보 가져오기
+export const getLikesInfo = async (
+  postId: string,
+  userId: string,
+  comment_id: string
+) => {
+  const commentRef = doc(db, "posts", postId || "", "comments", comment_id);
+  const commentSnap = await getDoc(commentRef);
+
+  if (commentSnap.exists()) {
+    const likes = commentSnap.data().likes;
+    const liked = likes?.includes(userId);
+    const likeCount = likes?.length;
+
+    return { liked, likeCount };
+  }
+
+  return { liked: false, likeCount: 0 };
 };
