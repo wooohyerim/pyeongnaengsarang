@@ -116,7 +116,9 @@ const Comment = ({ postId, uid }: PropValue) => {
               </div>
               <div className="flex justify-between w-full gap-1">
                 {user?.uid !== list.uid ? (
-                  <span className="text-[14px] w-[400px]">{list.comment}</span>
+                  <span className="text-[14px] w-[400px] min-h-[40px]">
+                    {list.comment}
+                  </span>
                 ) : (
                   <textarea
                     defaultValue={list.comment}

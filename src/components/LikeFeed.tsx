@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 import { auth } from "@/firebase/firebase";
 import { addLike, removeLike, getLikesInfo } from "@/api/post";
 
@@ -54,18 +54,11 @@ const LikeFeed = ({ postId }: PropType) => {
 
   return (
     <div className="flex items-center gap-1 px-3 py-1 border rounded-xl ">
-      {likeCount > 0 && liked ? (
-        <FaHeart
-          style={{ color: "#e5503c", cursor: "pointer" }}
-          onClick={handleLike}
-        />
-      ) : (
-        <FaRegHeart
-          style={{ color: "#e5503c", cursor: "pointer" }}
-          onClick={handleLike}
-        />
-      )}
-      <span className="text-[14px] text-[#e5503c]">
+      <FaRegHeart
+        style={{ color: "#e5503c", cursor: "pointer" }}
+        onClick={handleLike}
+      />
+      <span className="text-[14px] text-[#464545]">
         {likeCount > 0 ? likeCount : 0}
       </span>
     </div>
