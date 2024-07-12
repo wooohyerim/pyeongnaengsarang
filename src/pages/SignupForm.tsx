@@ -1,19 +1,31 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FirebaseError } from "firebase/app";
 import { SignUpValues } from "@/types";
 import Button from "@/components/common/Button";
 import { signUpSubmit } from "@/api/auth";
+import { FaImage } from "react-icons/fa";
 
 const SignupForm = () => {
   const navigate = useNavigate();
+  const [previewImg, setPreviewImg] = useState<string>("");
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<SignUpValues>();
+
+  const preview = watch("image");
+  useEffect(() => {
+    if (preview && preview.length > 0) {
+      const file = preview[0];
+      setPreviewImg(URL.createObjectURL(file));
+    }
+  }, [preview]);
 
   const onSubmit = async (data: SignUpValues) => {
     try {
@@ -59,17 +71,34 @@ const SignupForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-5 w-[400px] h-full my-0 mx-auto p-4"
       >
-        <div className="flex flex-col gap-1 h-[75px]">
-          <label htmlFor="image" className="text-[#636363] text-[12px]">
-            프로필 이미지 *
-          </label>{" "}
-          <input
-            type={"file"}
-            accept=" .jpg, .png, .jpeg"
-            {...register("image", { required: "이미지를 등록해주세요." })}
-            id={"image"}
-            className="text-[14px] text-[#636363]"
-          />
+        <div className="flex flex-col gap-1 h-[200px]">
+          <span className="text-[#636363] text-[12px]"> 프로필 이미지 *</span>
+          <label
+            htmlFor="image"
+            className="flex flex-col justify-center items-center gap-2 w-[150px] h-[150px] my-0 mx-auto rounded-full bg-white cursor-pointer"
+          >
+            {preview && preview.length > 0 ? (
+              <img
+                className="w-[150px] h-[150px] rounded-full"
+                src={previewImg}
+                alt="img"
+              />
+            ) : (
+              <>
+                <FaImage size={30} color="gray" />
+                <span className="text-[12px] text-[#636363]">
+                  이미지 업로드
+                </span>
+              </>
+            )}
+            <input
+              type={"file"}
+              accept=" .jpg, .png, .jpeg"
+              {...register("image", { required: "이미지를 등록해주세요." })}
+              id={"image"}
+              className="text-[14px] text-[#636363] hidden"
+            />
+          </label>
           {errors.image && (
             <span className="pl-1 text-[#ff0000] text-[12px]">
               {errors.image.message}
