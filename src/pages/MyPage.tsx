@@ -97,7 +97,7 @@ const MyPage = () => {
               type="file"
               id="profile"
               className={cn(
-                "w-full text-[14px] text-[#636363]",
+                "w-full text-[12px] text-[#636363]",
                 uid !== data?.uid && "hidden"
               )}
               disabled={uid !== data?.uid}
@@ -108,7 +108,7 @@ const MyPage = () => {
             <label className="text-[12px] text-[#74512D]">닉네임</label>
             <input
               className={cn(
-                "w-full h-[50px] p-2  text-[#543310] outline-none bg-white rounded-xl border",
+                "w-full h-[50px] p-2 text-[14px]  text-[#543310] outline-none bg-white rounded-xl border",
                 uid !== data?.uid && "bg-[#eee]"
               )}
               type="text"
@@ -122,7 +122,7 @@ const MyPage = () => {
               disabled={uid !== data?.uid}
               {...register("bio")}
               className={cn(
-                "w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden   text-[#543310]",
+                "w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden text-[14px]   text-[#543310]",
                 uid !== data?.uid && "bg-[#eee]"
               )}
             ></textarea>

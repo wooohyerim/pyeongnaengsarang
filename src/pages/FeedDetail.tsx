@@ -19,11 +19,11 @@ interface PostValue {
   content?: string;
 }
 
-interface UpdatePostValue {
-  image?: File[];
-  title?: string;
-  content?: string;
-}
+// interface UpdatePostValue {
+//   image?: File[];
+//   title?: string;
+//   content?: string;
+// }
 
 const FeedDetail = () => {
   const user = auth.currentUser;
@@ -31,7 +31,7 @@ const FeedDetail = () => {
   const navigate = useNavigate();
   const methods = useForm();
   const { register, handleSubmit, setValue } = useForm<PostValue>();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // postId에 따라 정보 가져오기
   const {
@@ -43,6 +43,18 @@ const FeedDetail = () => {
     queryFn: () => getUserPost(postId || ""),
     enabled: !!postId,
   });
+
+  // Timestamp 날짜 추출
+  const day = currentPost?.createdAt?.toDate();
+  const updateDay = currentPost?.updatedAt?.toDate();
+  const year = updateDay ? updateDay?.getFullYear() : day?.getFullYear();
+  const month = (
+    "0" + (updateDay ? updateDay?.getMonth() + 1 : day?.getMonth() + 1)
+  ).slice(-2);
+  const days = (
+    "0" + (updateDay ? updateDay?.getDate() : day?.getDate())
+  ).slice(-2);
+  const dateString = year + "-" + month + "-" + days;
 
   // 모든 유저 가져오기
   const { data: allPost } = useQuery({
@@ -179,9 +191,14 @@ const FeedDetail = () => {
                 disabled={user?.uid !== data?.uid}
               />
               <div className="flex items-center justify-between w-full">
-                <span className="text-[12px] text-[#A79277]">
-                  {currentPost?.nickname}
-                </span>
+                <div className="flex gap-2">
+                  <span className="text-[12px] text-[#A79277]">
+                    {currentPost?.nickname}
+                  </span>
+                  <span className="text-[12px] text-[#A79277]">
+                    {dateString}
+                  </span>
+                </div>
                 <LikeFeed postId={postId} />
               </div>
             </div>

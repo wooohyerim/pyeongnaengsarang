@@ -34,7 +34,7 @@ const UserList = () => {
             <div
               key={user.uid}
               onClick={() => navigate(`/mypage/${user.uid}`)}
-              className="flex flex-col gap-4 w-[190px] h-[300px] cursor-pointer bg-white rounded-xl shadow-lg"
+              className="flex flex-col gap-4 w-[190px] h-[300px] cursor-pointer bg-white rounded-xl shadow-md "
             >
               <img
                 src={user.profileImg}
@@ -45,12 +45,11 @@ const UserList = () => {
                 <span className="text-[#74512D] font-IBMSemibold">
                   {user.nickname}
                 </span>
-                <p
+                <textarea
+                  defaultValue={user.bio}
                   className=" text-[13px] text-[#A79277]
-                line-clamp-3 text-ellipsis"
-                >
-                  {user.bio}
-                </p>
+                line-clamp-2 text-ellipsis resize-none outline-none"
+                />
               </div>
             </div>
           ))
