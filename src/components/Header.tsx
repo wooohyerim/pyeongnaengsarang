@@ -30,7 +30,7 @@ const Header: React.FC = () => {
       <div className="flex gap-4">
         <Avatar>
           {photoURL ? (
-            <AvatarImage src={photoURL} />
+            <AvatarImage src={photoURL} alt="img" />
           ) : (
             <AvatarFallback>profile</AvatarFallback>
           )}

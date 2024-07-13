@@ -74,6 +74,7 @@ export const getAllInfiniteData = async ({ pageParam = 0 }) => {
       createdAt: postDoc.data().createdAt,
     });
   });
+
   allPosts.sort((a: any, b: any) => b.createdAt - a.createdAt);
 
   const startIndex = pageParam * pageSize;

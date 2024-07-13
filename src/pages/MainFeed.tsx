@@ -57,7 +57,9 @@ const MainFeed = () => {
       <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
         {data?.pages.map((page, pageIndex) =>
           page.data.map((posts) => {
+            // console.log(posts);
             const postUser = userData?.find((user) => user.uid === posts.uid);
+            console.log(postUser);
 
             return (
               <div
@@ -86,6 +88,7 @@ const MainFeed = () => {
                       src={`${posts.photoURL}`}
                       alt="img"
                       className="object-cover w-[200px] h-full rounded-t-xl"
+                      loading="lazy"
                     />
                   )}
                 </div>
@@ -102,10 +105,11 @@ const MainFeed = () => {
                         src={postUser.profileImg}
                         alt="User Profile"
                         className="w-[30px] h-[30px] rounded-full mr-2"
+                        loading="lazy"
                       />
                     )}
                     <span className="text-[#74512D] text-[14px] font-IBMSemibold">
-                      {posts.nickname}
+                      {postUser?.nickname}
                     </span>
                   </div>
                   <LikeFeed postId={posts.postId} />

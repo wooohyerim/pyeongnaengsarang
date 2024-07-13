@@ -65,8 +65,8 @@ const MyPage = () => {
     try {
       await updateUser(data);
       alert("수정이 완료되었습니다.");
-      window.location.replace("/main");
-      // navigate("/main");
+      // window.location.replace("/main");
+      navigate("/main");
     } catch (error) {
       console.error("Error updating profile: ", error);
     }

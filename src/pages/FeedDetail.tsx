@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
@@ -18,12 +18,6 @@ interface PostValue {
   title?: string;
   content?: string;
 }
-
-// interface UpdatePostValue {
-//   image?: File[];
-//   title?: string;
-//   content?: string;
-// }
 
 const FeedDetail = () => {
   const user = auth.currentUser;
@@ -78,19 +72,6 @@ const FeedDetail = () => {
     setValue("image", otherPost?.photoURL);
   }
 
-  // const mutation = useMutation({
-  //   mutationFn: (updateData: { data: PostValue; postId: string }) =>
-  //     updatePost(updateData.data, updateData.postId),
-  //   onMutate: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["posts"] });
-  //     alert("수정이 완료되었습니다.");
-  //     navigate("/main");
-  //   },
-  //   onError: (error) => {
-  //     console.log("수정 error => ", error);
-  //   },
-  // });
-
   const handleClickDelete = async (postId: string) => {
     try {
       const confirm = window.confirm("게시글을 삭제하시겠습니까?");
@@ -107,15 +88,13 @@ const FeedDetail = () => {
     try {
       await updatePost(data, postId || "");
       alert("수정이 완료되었습니다.");
-      window.location.replace("/main");
+      navigate("/main");
+      // navigate(`/detail/${postId}`);
+      // window.location.replace("/main");
     } catch (error) {
       console.log(error);
     }
   };
-
-  // const handleClickUpdate = (data: UpdatePostValue) => {
-  //   mutation.mutate({ data, postId: postId || "" });
-  // };
 
   if (isLoading) {
     return <Loading />;
