@@ -1,4 +1,5 @@
 import { auth, db, storage } from "@/firebase/firebase";
+import { PostValue } from "@/types";
 import {
   getDoc,
   doc,
@@ -17,15 +18,15 @@ import {
   deleteObject,
 } from "firebase/storage";
 
-interface PostValue {
-  image?: File[];
-  title: string;
-  content: string;
-  postId?: string;
-  uid?: string;
-  nickname?: string;
-  createdAt?: Date;
-}
+// interface PostValue {
+//   image?: File[];
+//   title: string;
+//   content: string;
+//   postId?: string;
+//   uid?: string;
+//   nickname?: string;
+//   createdAt?: Date;
+// }
 
 interface UpdatePostValue {
   image?: File[];
@@ -42,9 +43,11 @@ export const createPost = async (data: PostValue) => {
     let imageUrl = "";
     if (data.image && data.image.length > 0) {
       const postImg = data.image[0];
-      const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
-      await uploadBytes(fileRef, postImg);
-      imageUrl = await getDownloadURL(fileRef);
+      if (imageUrl) {
+        const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
+        await uploadBytes(fileRef, postImg);
+        imageUrl = await getDownloadURL(fileRef);
+      }
     }
 
     // post 데이터 Firestore에 저장
@@ -89,10 +92,9 @@ export const deletePost = async (
 export const updatePost = async (
   data: UpdatePostValue,
   postId: string
-  // downloadURL: string
 ): Promise<void> => {
   const user = auth.currentUser;
-  const postRef = doc(db, "posts", `${postId}`);
+  const postRef = doc(db, "posts", postId);
   const { title, content, image } = data;
 
   const currentDoc = await getDoc(postRef);
@@ -100,35 +102,31 @@ export const updatePost = async (
 
   let imageUrl = currentData?.photoURL;
 
-  console.log("기존 이미지", imageUrl);
-
-  let updateImgUrl = "";
-
   if (image && image.length > 0) {
     const imageFile = image[0];
+    console.log("Image file:", imageFile);
     const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
     const snapshot = await uploadBytes(storageRef, imageFile);
     // 업데이트 된 이미지를 참조 .ref
-    updateImgUrl = await getDownloadURL(snapshot.ref);
+    const updateImgUrl = await getDownloadURL(snapshot.ref);
+
+    if (imageUrl) {
+      await deleteFile(imageUrl);
+    }
+
+    imageUrl = updateImgUrl;
   }
 
-  console.log("current imageUrl:", imageUrl);
-  console.log("update imageUrl:", updateImgUrl);
+  console.log("Uploaded image URL:", imageUrl);
 
   const updatedData = {
     title: title,
     content: content,
-    photoURL: updateImgUrl,
+    photoURL: imageUrl,
     nickname: user?.displayName,
     updatedAt: Timestamp.now(),
   };
-
-  console.log("update => ", updateImgUrl);
-
   await updateDoc(postRef, updatedData);
-  if (updateImgUrl && imageUrl) {
-    await deleteFile(imageUrl);
-  }
 };
 
 // 좋아요 추가

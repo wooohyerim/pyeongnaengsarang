@@ -42,7 +42,7 @@ export interface UpdateUserValue {
 }
 
 export interface PostValue {
-  image?: File[] | undefined;
+  image?: File[];
   title: string;
   content: string;
 }

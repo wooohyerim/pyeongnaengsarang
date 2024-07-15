@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Button from "./common/Button";
 import { useFormContext } from "react-hook-form";
 import { createComment, deleteComment, updateComment } from "@/api/comment";
@@ -6,7 +6,6 @@ import { auth } from "@/firebase/firebase";
 import { CommentValue } from "@/types";
 import { getPostComment } from "@/hooks/getCommentData";
 import { cn } from "@/lib/utils";
-
 import LikeComment from "./LikeComment";
 
 interface PropValue {
@@ -16,8 +15,9 @@ interface PropValue {
 
 const Comment = ({ postId, uid }: PropValue) => {
   // props uid => 게시글 쓴 유저의 uid
-  const { register, reset, watch, setValue } = useFormContext();
+  const { register, reset, watch } = useFormContext();
   const user = auth.currentUser;
+  const queryClient = useQueryClient();
 
   const {
     data: commentData,
@@ -45,7 +45,7 @@ const Comment = ({ postId, uid }: PropValue) => {
       await createComment(newComment, postId || "");
       alert("작성되었습니다.");
       reset();
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
     } catch (error) {
       console.log("comment 등록 error =>", error);
     }
@@ -54,10 +54,10 @@ const Comment = ({ postId, uid }: PropValue) => {
   // 댓글 삭제
   const handleClickDelete = async (comment_id: string) => {
     try {
-      const confirm = window.confirm("게시글을 삭제하시겠습니까?");
-      if (confirm) {
-        await deleteComment(postId || "", comment_id || "");
-        window.location.reload();
+      const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
+      if (confirmDelete) {
+        await deleteComment(postId || "", comment_id);
+        queryClient.invalidateQueries({ queryKey: ["comments", postId || ""] });
       }
     } catch (error) {
       console.log("delete comment => ", error);
@@ -67,10 +67,9 @@ const Comment = ({ postId, uid }: PropValue) => {
   // 댓글 수정
   const handleClickUpdate = async (comment_id: string) => {
     const modifyComment = watch(`modifyComment_${comment_id}`);
-
     try {
       await updateComment(modifyComment, postId || "", comment_id);
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["comments", postId || ""] });
     } catch (error) {
       console.log("comment 수정 error =>", error);
     }
@@ -166,7 +165,9 @@ const Comment = ({ postId, uid }: PropValue) => {
             );
           })
         ) : (
-          <p className="text-[14px] text-gray-500">아직 댓글이 없습니다..</p>
+          <p className="pl-1 text-[14px] text-gray-500">
+            아직 댓글이 없습니다..
+          </p>
         )}
       </div>
     </div>

@@ -24,17 +24,6 @@ export const getPostComment = async (postId: string) => {
 
     // 댓글 데이터 배열 생성
     const comments: CommentValue[] = [];
-    // commentsSnapshot.forEach((doc) => {
-    //   // comments.push({ id: doc.id, ...doc.data() });
-    //   comments.push({
-    //     comment: doc.data().comment,
-    //     comment_id: doc.data().comment_id,
-    //     createdAt: doc.data().createdAt,
-    //     uid: doc.data().uid,
-    //     nickname: doc.data().nickname,
-    //     photoURL: doc.data().photoURL,
-    //   });
-    // });
 
     for (const doc of commentsSnapshot.docs) {
       const commentData = doc.data();
