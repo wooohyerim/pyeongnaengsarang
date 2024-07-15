@@ -13,7 +13,13 @@ import { deletePost, updatePost } from "@/api/post";
 import Comment from "@/components/Comment";
 import LikeFeed from "@/components/LikeFeed";
 
-interface PostValue {
+// interface PostValue {
+//   image?: File[];
+//   title?: string;
+//   content?: string;
+// }
+
+interface UpdatePostValue {
   image?: File[];
   title?: string;
   content?: string;
@@ -24,8 +30,7 @@ const FeedDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const methods = useForm();
-  const { register, handleSubmit, setValue } = useForm<PostValue>();
-  // const queryClient = useQueryClient();
+  const { register, handleSubmit, setValue } = useForm<UpdatePostValue>();
 
   // postId에 따라 정보 가져오기
   const {
@@ -84,13 +89,11 @@ const FeedDetail = () => {
     }
   };
 
-  const handleClickUpdate = async (data: PostValue) => {
+  const handleClickUpdate = async (data: UpdatePostValue) => {
     try {
       await updatePost(data, postId || "");
       alert("수정이 완료되었습니다.");
       navigate("/main");
-      // navigate(`/detail/${postId}`);
-      // window.location.replace("/main");
     } catch (error) {
       console.log(error);
     }
@@ -116,8 +119,30 @@ const FeedDetail = () => {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(handleClickUpdate)}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-8"
           >
+            <div className="flex flex-col pb-3 border border-t-0 border-x-0 border-b-gray-200">
+              <input
+                type="text"
+                {...register("title")}
+                className={cn(
+                  "w-full  text-[28px] text-[#543310] font-bold outline-none",
+                  user?.uid !== data?.uid && "bg-white"
+                )}
+                disabled={user?.uid !== data?.uid}
+              />
+              <div className="flex items-center justify-between w-full">
+                <div className="flex gap-2">
+                  <span className="text-[12px] text-[#A79277]">
+                    {currentPost?.nickname}
+                  </span>
+                  <span className="text-[12px] text-[#A79277]">
+                    {dateString}
+                  </span>
+                </div>
+                <LikeFeed postId={postId} />
+              </div>
+            </div>
             {data?.photoURL !== "" ? (
               <div className="flex flex-col w-full h-[270px] gap-2">
                 <label htmlFor="postImg" className="w-full">
@@ -159,7 +184,7 @@ const FeedDetail = () => {
                 />
               </div>
             ) : null}
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <input
                 type="text"
                 {...register("title")}
@@ -180,7 +205,7 @@ const FeedDetail = () => {
                 </div>
                 <LikeFeed postId={postId} />
               </div>
-            </div>
+            </div> */}
             <div className="w-full min-h-[150px] text-[15px] text-[#74512D]">
               <textarea
                 {...register("content")}

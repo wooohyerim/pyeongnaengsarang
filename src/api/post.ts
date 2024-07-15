@@ -97,30 +97,38 @@ export const updatePost = async (
 
   const currentDoc = await getDoc(postRef);
   const currentData = currentDoc.data();
-  console.log("sdfsdf", currentData);
+
   let imageUrl = currentData?.photoURL;
+
+  console.log("기존 이미지", imageUrl);
+
+  let updateImgUrl = "";
 
   if (image && image.length > 0) {
     const imageFile = image[0];
     const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
     const snapshot = await uploadBytes(storageRef, imageFile);
     // 업데이트 된 이미지를 참조 .ref
-    imageUrl = await getDownloadURL(snapshot.ref);
+    updateImgUrl = await getDownloadURL(snapshot.ref);
   }
 
-  // console.log("Current imageUrl:", imageUrl);
+  console.log("current imageUrl:", imageUrl);
+  console.log("update imageUrl:", updateImgUrl);
 
   const updatedData = {
     title: title,
     content: content,
-    photoURL: imageUrl,
+    photoURL: updateImgUrl,
+    nickname: user?.displayName,
     updatedAt: Timestamp.now(),
   };
 
+  console.log("update => ", updateImgUrl);
+
   await updateDoc(postRef, updatedData);
-  // if (downloadURL && downloadURL !== imageUrl) {
-  //   await deleteFile(downloadURL);
-  // }
+  if (updateImgUrl && imageUrl) {
+    await deleteFile(imageUrl);
+  }
 };
 
 // 좋아요 추가

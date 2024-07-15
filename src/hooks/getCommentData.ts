@@ -2,6 +2,19 @@ import { db } from "@/firebase/firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { CommentValue } from "@/types";
 
+// 유저 정보를 가져오는 함수
+const getUserDataById = async (uid: string) => {
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    return userSnap.data();
+  } else {
+    console.log("No such user document!");
+    return null;
+  }
+};
+
 // comments 문서에서 id에 있는 댓글 가져오기
 export const getPostComment = async (postId: string) => {
   try {
@@ -11,17 +24,35 @@ export const getPostComment = async (postId: string) => {
 
     // 댓글 데이터 배열 생성
     const comments: CommentValue[] = [];
-    commentsSnapshot.forEach((doc) => {
-      // comments.push({ id: doc.id, ...doc.data() });
-      comments.push({
-        comment: doc.data().comment,
-        comment_id: doc.data().comment_id,
-        createdAt: doc.data().createdAt,
-        uid: doc.data().uid,
-        nickname: doc.data().nickname,
-        photoURL: doc.data().photoURL,
-      });
-    });
+    // commentsSnapshot.forEach((doc) => {
+    //   // comments.push({ id: doc.id, ...doc.data() });
+    //   comments.push({
+    //     comment: doc.data().comment,
+    //     comment_id: doc.data().comment_id,
+    //     createdAt: doc.data().createdAt,
+    //     uid: doc.data().uid,
+    //     nickname: doc.data().nickname,
+    //     photoURL: doc.data().photoURL,
+    //   });
+    // });
+
+    for (const doc of commentsSnapshot.docs) {
+      const commentData = doc.data();
+      const userData = await getUserDataById(commentData.uid);
+      // console.log(userData);
+
+      if (userData) {
+        comments.push({
+          comment: commentData.comment,
+          comment_id: commentData.comment_id,
+          createdAt: commentData.createdAt,
+          uid: commentData.uid,
+          nickname: userData.nickname,
+          photoURL: userData.profileImg,
+        });
+      }
+    }
+
     comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
     return comments;
   } catch (error) {

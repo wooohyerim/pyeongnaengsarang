@@ -59,7 +59,6 @@ const MainFeed = () => {
           page.data.map((posts) => {
             // console.log(posts);
             const postUser = userData?.find((user) => user.uid === posts.uid);
-            console.log(postUser);
 
             return (
               <div
