@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { useUserState } from "@/store/useUserState";
 import { getUserProfile, getAllUserData } from "@/hooks/getUserData";
 import { cn } from "@/lib/utils";
@@ -10,15 +10,20 @@ import { UpdateUserValue } from "@/types";
 import { updateUser } from "@/api/user";
 import Loading from "@/components/Loading";
 import Error from "@/components/Error";
+import MypageImg from "@/components/MypageImg";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const { uid } = useParams();
+  const queryClient = useQueryClient();
+  const methods = useForm();
 
   const currentUserId = user?.uid;
 
   const { register, setValue, handleSubmit } = useForm<UpdateUserValue>();
+
+  // const previewImg = watch("image");
 
   // 로그인 한 유저 정보 가져오기
   const {
@@ -65,6 +70,7 @@ const MyPage = () => {
     try {
       await updateUser(data);
       alert("수정이 완료되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["users", user?.uid] });
       // window.location.replace("/main");
       navigate("/main");
     } catch (error) {
@@ -75,68 +81,76 @@ const MyPage = () => {
   return (
     <MainLayout>
       <section className="w-full h-[720px] pt-8 ">
-        <form
-          onSubmit={handleSubmit(onUpdateProfile)}
-          className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"
-        >
-          <div className="flex flex-col items-center justify-between  w-[200px] h-[200px]">
-            <label htmlFor="profile">
-              <img
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(onUpdateProfile)}
+            className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"
+          >
+            {/* <div className="flex flex-col items-center justify-between  w-[200px] h-[200px]">
+              <label htmlFor="profile">
+                <img
+                  className={cn(
+                    "rounded-full w-[165px] h-[170px]",
+                    uid !== data?.uid && "w-[180px] h-[180px] "
+                  )}
+                  src={
+                    uid !== data?.uid ? otherUser?.profileImg : data?.profileImg
+                  }
+                  alt="img"
+                />
+              </label>
+              <input
+                {...register("image")}
+                type="file"
+                id="profile"
                 className={cn(
-                  "rounded-full w-[165px] h-[170px]",
-                  uid !== data?.uid && "w-[180px] h-[180px] "
+                  "w-full text-[12px] text-[#636363]",
+                  uid !== data?.uid && "hidden"
                 )}
-                src={
-                  uid !== data?.uid ? otherUser?.profileImg : data?.profileImg
-                }
-                alt="img"
+                disabled={uid !== data?.uid}
               />
-            </label>
-            <input
-              {...register("image")}
-              type="file"
-              id="profile"
-              className={cn(
-                "w-full text-[12px] text-[#636363]",
-                uid !== data?.uid && "hidden"
-              )}
-              disabled={uid !== data?.uid}
+            </div> */}
+            <MypageImg
+              uid={uid}
+              dataUid={data?.uid}
+              dataProfile={data?.profileImg}
+              otherProfile={otherUser?.profileImg}
             />
-          </div>
 
-          <div className="flex flex-col gap-2  justify-between w-[300px]">
-            <label className="text-[12px] text-[#74512D]">닉네임</label>
-            <input
-              className={cn(
-                "w-full h-[50px] p-2 text-[14px]  text-[#543310] outline-none bg-white rounded-xl border",
-                uid !== data?.uid && "bg-[#eee]"
-              )}
-              type="text"
-              {...register(`nickname`)}
-              disabled={uid !== data?.uid}
-            />
-          </div>
-          <div className="flex flex-col gap-2 w-[300px] h-[150px] line-clamp-3 text-ellipsis">
-            <label className="text-[12px] text-[#74512D]">자기소개</label>
-            <textarea
-              disabled={uid !== data?.uid}
-              {...register("bio")}
-              className={cn(
-                "w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden text-[14px]   text-[#543310]",
-                uid !== data?.uid && "bg-[#eee]"
-              )}
-            ></textarea>
-          </div>
+            <div className="flex flex-col gap-2  justify-between w-[300px]">
+              <label className="text-[12px] text-[#74512D]">닉네임</label>
+              <input
+                className={cn(
+                  "w-full h-[50px] p-2 text-[14px]  text-[#543310] outline-none bg-white rounded-xl border",
+                  uid !== data?.uid && "bg-[#eee]"
+                )}
+                type="text"
+                {...register(`nickname`)}
+                disabled={uid !== data?.uid}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-[300px] h-[150px] line-clamp-3 text-ellipsis">
+              <label className="text-[12px] text-[#74512D]">자기소개</label>
+              <textarea
+                disabled={uid !== data?.uid}
+                {...register("bio")}
+                className={cn(
+                  "w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden text-[14px]   text-[#543310]",
+                  uid !== data?.uid && "bg-[#eee]"
+                )}
+              ></textarea>
+            </div>
 
-          <div className="flex w-[300px] gap-6">
-            <Button
-              onClick={() => navigate(-1)}
-              type="button"
-              title="돌아가기"
-            />
-            {uid === data?.uid && <Button type="submit" title="수정하기" />}
-          </div>
-        </form>
+            <div className="flex w-[300px] gap-6">
+              <Button
+                onClick={() => navigate(-1)}
+                type="button"
+                title="돌아가기"
+              />
+              {uid === data?.uid && <Button type="submit" title="수정하기" />}
+            </div>
+          </form>
+        </FormProvider>
       </section>
     </MainLayout>
   );

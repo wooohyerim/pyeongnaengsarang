@@ -24,29 +24,29 @@ interface UpdatePostValue {
   content?: string;
 }
 
-// 이미지 webp로 변환
-const convertToWebP = (file: Blob): Promise<Blob> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      ctx?.drawImage(img, 0, 0);
+// // 이미지 webp로 변환
+// const convertToWebP = (file: Blob): Promise<Blob> => {
+//   return new Promise((resolve, reject) => {
+//     const img = new Image();
+//     img.src = URL.createObjectURL(file);
+//     img.onload = () => {
+//       const canvas = document.createElement("canvas");
+//       canvas.width = img.width;
+//       canvas.height = img.height;
+//       const ctx = canvas.getContext("2d");
+//       ctx?.drawImage(img, 0, 0);
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject(new Error("Image conversion failed"));
-        }
-      }, "image/webp");
-    };
-    img.onerror = reject;
-  });
-};
+//       canvas.toBlob((blob) => {
+//         if (blob) {
+//           resolve(blob);
+//         } else {
+//           reject(new Error("Image conversion failed"));
+//         }
+//       }, "image/webp");
+//     };
+//     img.onerror = reject;
+//   });
+// };
 
 // post 생성
 export const createPost = async (data: PostValue) => {
@@ -57,10 +57,10 @@ export const createPost = async (data: PostValue) => {
     let imageUrl = "";
     if (data.image && data.image.length > 0) {
       const postImg = data.image[0];
-      const webpImg = await convertToWebP(postImg);
+      // const webpImg = await convertToWebP(postImg);
 
       const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
-      await uploadBytes(fileRef, webpImg);
+      await uploadBytes(fileRef, postImg);
       imageUrl = await getDownloadURL(fileRef);
     }
 
@@ -111,21 +111,24 @@ export const updatePost = async (
   const postRef = doc(db, "posts", postId);
   const { title, content, image } = data;
 
+  console.log("upload image => ", image);
+
   const currentDoc = await getDoc(postRef);
   const currentData = currentDoc.data();
 
   let imageUrl = currentData?.photoURL;
   let updateImgUrl = "";
 
-  // Array.isArray(image)
-
-  if (image && image.length > 0) {
+  if (image && Array.isArray(image) && image.length > 0) {
     const imageFile = image[0];
-    const webpImg = await convertToWebP(imageFile);
-    console.log("Image file:", imageFile);
+    // const webpImg = await convertToWebP(imageFile);
+    // console.log("Image file:", imageFile);
+  } else if (image && image.length > 0) {
+    const imageFile = image[0];
     const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
-    const snapshot = await uploadBytes(storageRef, webpImg);
-    // 업데이트 된 이미지를 참조 .ref
+    const snapshot = await uploadBytes(storageRef, imageFile);
+
+    // 업데이트 된 이미지를 참조 -> .ref
     updateImgUrl = await getDownloadURL(snapshot.ref);
 
     if (updateImgUrl && imageUrl) {
@@ -135,7 +138,7 @@ export const updatePost = async (
     imageUrl = updateImgUrl;
   }
 
-  console.log("Uploaded image URL:", imageUrl);
+  // console.log("Uploaded image URL:", imageUrl);
 
   const updatedData = {
     title: title,
