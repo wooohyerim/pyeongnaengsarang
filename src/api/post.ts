@@ -18,21 +18,35 @@ import {
   deleteObject,
 } from "firebase/storage";
 
-// interface PostValue {
-//   image?: File[];
-//   title: string;
-//   content: string;
-//   postId?: string;
-//   uid?: string;
-//   nickname?: string;
-//   createdAt?: Date;
-// }
-
 interface UpdatePostValue {
   image?: File[];
   title?: string;
   content?: string;
 }
+
+// 이미지 webp로 변환
+const convertToWebP = (file: Blob): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(img, 0, 0);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Image conversion failed"));
+        }
+      }, "image/webp");
+    };
+    img.onerror = reject;
+  });
+};
 
 // post 생성
 export const createPost = async (data: PostValue) => {
@@ -43,11 +57,11 @@ export const createPost = async (data: PostValue) => {
     let imageUrl = "";
     if (data.image && data.image.length > 0) {
       const postImg = data.image[0];
-      if (imageUrl) {
-        const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
-        await uploadBytes(fileRef, postImg);
-        imageUrl = await getDownloadURL(fileRef);
-      }
+      const webpImg = await convertToWebP(postImg);
+
+      const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
+      await uploadBytes(fileRef, webpImg);
+      imageUrl = await getDownloadURL(fileRef);
     }
 
     // post 데이터 Firestore에 저장
@@ -101,16 +115,20 @@ export const updatePost = async (
   const currentData = currentDoc.data();
 
   let imageUrl = currentData?.photoURL;
+  let updateImgUrl = "";
+
+  // Array.isArray(image)
 
   if (image && image.length > 0) {
     const imageFile = image[0];
+    const webpImg = await convertToWebP(imageFile);
     console.log("Image file:", imageFile);
     const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
-    const snapshot = await uploadBytes(storageRef, imageFile);
+    const snapshot = await uploadBytes(storageRef, webpImg);
     // 업데이트 된 이미지를 참조 .ref
-    const updateImgUrl = await getDownloadURL(snapshot.ref);
+    updateImgUrl = await getDownloadURL(snapshot.ref);
 
-    if (imageUrl) {
+    if (updateImgUrl && imageUrl) {
       await deleteFile(imageUrl);
     }
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
@@ -24,6 +25,7 @@ const FeedDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const methods = useForm();
+  const [selectedFileName, setSelectedFileName] = useState("");
 
   // postId에 따라 정보 가져오기
   const {
@@ -47,14 +49,9 @@ const FeedDetail = () => {
 
   // 현재 포스트
   const data = postId === currentPost?.postId ? currentPost : otherPost;
-  console.log(data);
+  // console.log(data);
 
-  const { register, handleSubmit, setValue } = useForm<UpdatePostValue>({
-    defaultValues: {
-      title: data?.title,
-      content: data?.content,
-    },
-  });
+  const { register, handleSubmit, setValue } = useForm<UpdatePostValue>();
 
   // Timestamp 날짜 추출
   const day = currentPost?.createdAt?.toDate();
@@ -68,15 +65,35 @@ const FeedDetail = () => {
   ).slice(-2);
   const dateString = year + "-" + month + "-" + days;
 
-  if (postId === data?.postId) {
-    setValue("title", data?.title);
-    setValue("content", data?.content);
-    setValue("image", data?.photoURL);
-  } else {
-    setValue("title", otherPost?.title);
-    setValue("content", otherPost?.content);
-    setValue("image", otherPost?.photoURL);
-  }
+  // if (postId === data?.postId) {
+  //   setValue("title", data?.title);
+  //   setValue("content", data?.content);
+  //   setValue("image", data?.photoURL);
+  // } else {
+  //   setValue("title", otherPost?.title);
+  //   setValue("content", otherPost?.content);
+  //   setValue("image", otherPost?.photoURL);
+  // }
+
+  useEffect(() => {
+    if (data) {
+      setValue("title", data.title);
+      setValue("content", data.content);
+      setValue("image", data.photoURL);
+    }
+  }, [data, setValue]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setValue("image", [file]);
+      setSelectedFileName(file.name);
+      console.log("Selected image file:", file);
+    } else {
+      setValue("image", undefined);
+      setSelectedFileName("");
+    }
+  };
 
   const handleClickDelete = async (postId: string) => {
     try {
@@ -90,19 +107,11 @@ const FeedDetail = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setValue("image", [e.target.files[0]]);
-    } else {
-      setValue("image", undefined);
-    }
-  };
-
   const handleClickUpdate = async (data: UpdatePostValue) => {
+    console.log("업로드 데이터 => ", data);
     try {
       await updatePost(data, postId || "");
       alert("수정이 완료되었습니다.");
-      // queryClient.invalidateQueries({ queryKey: ["post", postId] });
       navigate("/main");
     } catch (error) {
       console.log(error);
@@ -143,7 +152,7 @@ const FeedDetail = () => {
               />
               <div className="flex items-center justify-between w-full">
                 <div className="flex gap-2">
-                  <span className="text-[12px] text-[#A79277]">
+                  <span className="pl-1 text-[12px] text-[#A79277]">
                     {currentPost?.nickname}
                   </span>
                   <span className="text-[12px] text-[#A79277]">
@@ -177,7 +186,6 @@ const FeedDetail = () => {
                     "w-full text-[12px] text-[#636363]",
                     user?.uid !== data?.uid && "hidden"
                   )}
-                  onChange={handleImageChange}
                   disabled={user?.uid !== data?.uid}
                 />
               </div>
@@ -191,9 +199,10 @@ const FeedDetail = () => {
                   type="file"
                   {...register("image")}
                   id="postImg"
-                  onChange={handleImageChange}
                   className={cn("w-full text-[14px] text-[#636363]")}
+                  onChange={handleImageChange}
                 />
+                {selectedFileName}
               </div>
             ) : null}
             <div className="w-full min-h-[150px] text-[15px] text-[#74512D]">

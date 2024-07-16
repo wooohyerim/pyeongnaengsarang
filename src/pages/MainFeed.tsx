@@ -55,67 +55,76 @@ const MainFeed = () => {
   return (
     <MainLayout>
       <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
-        {data?.pages.map((page, pageIndex) =>
-          page.data.map((posts) => {
-            // console.log(posts);
-            const postUser = userData?.find((user) => user.uid === posts.uid);
+        {data ? (
+          data?.pages.map((page, pageIndex) =>
+            page.data.map((posts) => {
+              // console.log(posts);
+              const postUser = userData?.find((user) => user.uid === posts.uid);
 
-            return (
-              <div
-                key={posts.postId}
-                className="flex flex-col justify-between  w-full h-[200px] rounded-xl border shadow-md cursor-pointer"
-                onClick={() => navigate(`/detail/${posts.postId}`)}
-              >
-                <div className="flex w-full h-[150px] ">
-                  <div
-                    className={cn(
-                      "w-[300px] h-full p-2",
-                      !posts.photoURL && "w-full h-full p-2 rounded-t-xl "
-                    )}
-                  >
-                    <p className=" text-[#74512D] font-bold"> {posts.title}</p>
-                    <span
+              return (
+                <div
+                  key={posts.postId}
+                  className="flex flex-col justify-between  w-full h-[200px] rounded-xl border shadow-md cursor-pointer"
+                  onClick={() => navigate(`/detail/${posts.postId}`)}
+                >
+                  <div className="flex w-full h-[150px] ">
+                    <div
                       className={cn(
-                        "text-[14px] text-[#A79277] text-ellipsis line-clamp-5 text-pretty"
+                        "w-[300px] h-full p-2",
+                        !posts.photoURL && "w-full h-full p-2 rounded-t-xl "
                       )}
                     >
-                      {posts.content}
-                    </span>
-                  </div>
-                  {posts.photoURL && (
-                    <img
-                      src={`${posts.photoURL}`}
-                      alt="img"
-                      className="object-cover w-[200px] h-full rounded-t-xl"
-                      loading="lazy"
-                    />
-                  )}
-                </div>
-                <div
-                  className={cn(
-                    "flex items-center justify-between gap-2 p-2 w-full h-[50px] border",
-                    posts.photoURL && "h-[50px]"
-                  )}
-                >
-                  <div className="flex items-center">
-                    {" "}
-                    {postUser && postUser.profileImg && (
+                      <p className=" text-[#74512D] font-bold">
+                        {" "}
+                        {posts.title}
+                      </p>
+                      <span
+                        className={cn(
+                          "text-[14px] text-[#A79277] text-ellipsis line-clamp-5 text-pretty"
+                        )}
+                      >
+                        {posts.content}
+                      </span>
+                    </div>
+                    {posts.photoURL && (
                       <img
-                        src={postUser.profileImg}
-                        alt="User Profile"
-                        className="w-[30px] h-[30px] rounded-full mr-2"
+                        src={`${posts.photoURL}`}
+                        alt="img"
+                        className="object-cover w-[200px] h-full rounded-t-xl"
                         loading="lazy"
                       />
                     )}
-                    <span className="text-[#74512D] text-[14px] font-IBMSemibold">
-                      {postUser?.nickname}
-                    </span>
                   </div>
-                  <LikeFeed postId={posts.postId} />
+                  <div
+                    className={cn(
+                      "flex items-center justify-between gap-2 p-2 w-full h-[50px] border",
+                      posts.photoURL && "h-[50px]"
+                    )}
+                  >
+                    <div className="flex items-center">
+                      {" "}
+                      {postUser && postUser.profileImg && (
+                        <img
+                          src={postUser.profileImg}
+                          alt="User Profile"
+                          className="w-[30px] h-[30px] rounded-full mr-2"
+                          loading="lazy"
+                        />
+                      )}
+                      <span className="text-[#74512D] text-[14px] font-IBMSemibold">
+                        {postUser?.nickname}
+                      </span>
+                    </div>
+                    <LikeFeed postId={posts.postId} />
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })
+          )
+        ) : (
+          <div>
+            <p>게시글이 없습니다..</p>
+          </div>
         )}
       </div>
       <div ref={ref}>{isFetchingNextPage ? "loading..." : ""}</div>
