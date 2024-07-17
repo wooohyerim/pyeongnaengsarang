@@ -102,6 +102,22 @@ export const deletePost = async (
   await deleteDoc(postRef);
 };
 
+const uploadImage = async (
+  userId: string,
+  imageFile: File,
+  existingImageUrl?: string
+): Promise<string> => {
+  const storageRef = ref(storage, `${userId}/post/${imageFile.name}`);
+  const snapshot = await uploadBytes(storageRef, imageFile);
+  const updateImgUrl = await getDownloadURL(snapshot.ref);
+
+  if (updateImgUrl && existingImageUrl) {
+    await deleteFile(existingImageUrl);
+  }
+
+  return updateImgUrl;
+};
+
 //update post
 export const updatePost = async (
   data: UpdatePostValue,
@@ -117,28 +133,32 @@ export const updatePost = async (
   const currentData = currentDoc.data();
 
   let imageUrl = currentData?.photoURL;
-  let updateImgUrl = "";
 
-  if (image && Array.isArray(image) && image.length > 0) {
+  if (image && image.length > 0 && image[0] instanceof File) {
     const imageFile = image[0];
-    // const webpImg = await convertToWebP(imageFile);
-    // console.log("Image file:", imageFile);
-  } else if (image && image.length > 0) {
-    const imageFile = image[0];
-    const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
-    const snapshot = await uploadBytes(storageRef, imageFile);
+    console.log("Upload Image file:", imageFile);
 
-    // 업데이트 된 이미지를 참조 -> .ref
-    updateImgUrl = await getDownloadURL(snapshot.ref);
-
-    if (updateImgUrl && imageUrl) {
-      await deleteFile(imageUrl);
-    }
-
-    imageUrl = updateImgUrl;
+    imageUrl = await uploadImage(user?.uid || "", imageFile, imageUrl);
   }
+  // let updateImgUrl = "";
 
-  // console.log("Uploaded image URL:", imageUrl);
+  // if (image && image.length > 0) {
+  //   const imageFile = image[0];
+  //   console.log("Upload Image file:", imageFile);
+
+  //   const storageRef = ref(storage, `${user?.uid}/post/${imageFile.name}`);
+  //   const snapshot = await uploadBytes(storageRef, imageFile);
+
+  //   updateImgUrl = await getDownloadURL(snapshot.ref);
+
+  //   if (updateImgUrl && imageUrl) {
+  //     await deleteFile(imageUrl);
+  //   }
+
+  //   imageUrl = updateImgUrl;
+  // }
+
+  console.log("Uploaded image URL:", imageUrl);
 
   const updatedData = {
     title: title,
@@ -147,6 +167,7 @@ export const updatePost = async (
     nickname: user?.displayName,
     updatedAt: Timestamp.now(),
   };
+
   await updateDoc(postRef, updatedData);
 };
 

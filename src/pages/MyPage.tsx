@@ -10,20 +10,17 @@ import { UpdateUserValue } from "@/types";
 import { updateUser } from "@/api/user";
 import Loading from "@/components/Loading";
 import Error from "@/components/Error";
-import MypageImg from "@/components/MypageImg";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const { user } = useUserState();
   const { uid } = useParams();
   const queryClient = useQueryClient();
-  const methods = useForm();
+  const methods = useForm<UpdateUserValue>();
 
   const currentUserId = user?.uid;
 
-  const { register, setValue, handleSubmit } = useForm<UpdateUserValue>();
-
-  // const previewImg = watch("image");
+  const { register, setValue, handleSubmit } = methods;
 
   // 로그인 한 유저 정보 가져오기
   const {
@@ -71,8 +68,7 @@ const MyPage = () => {
       await updateUser(data);
       alert("수정이 완료되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["users", user?.uid] });
-      // window.location.replace("/main");
-      navigate("/main");
+      navigate("/user");
     } catch (error) {
       console.error("Error updating profile: ", error);
     }
@@ -86,7 +82,7 @@ const MyPage = () => {
             onSubmit={handleSubmit(onUpdateProfile)}
             className="flex flex-col items-center justify-evenly gap-6 min-h-[600px]"
           >
-            {/* <div className="flex flex-col items-center justify-between  w-[200px] h-[200px]">
+            <div className="flex flex-col items-center justify-between  w-[200px] h-[200px]">
               <label htmlFor="profile">
                 <img
                   className={cn(
@@ -109,20 +105,13 @@ const MyPage = () => {
                 )}
                 disabled={uid !== data?.uid}
               />
-            </div> */}
-            <MypageImg
-              uid={uid}
-              dataUid={data?.uid}
-              dataProfile={data?.profileImg}
-              otherProfile={otherUser?.profileImg}
-            />
-
+            </div>
             <div className="flex flex-col gap-2  justify-between w-[300px]">
-              <label className="text-[12px] text-[#74512D]">닉네임</label>
+              <label className="pl-1 text-[12px] text-[#74512D]">닉네임</label>
               <input
                 className={cn(
                   "w-full h-[50px] p-2 text-[14px]  text-[#543310] outline-none bg-white rounded-xl border",
-                  uid !== data?.uid && "bg-[#eee]"
+                  uid !== data?.uid && "bg-white "
                 )}
                 type="text"
                 {...register(`nickname`)}
@@ -130,13 +119,15 @@ const MyPage = () => {
               />
             </div>
             <div className="flex flex-col gap-2 w-[300px] h-[150px] line-clamp-3 text-ellipsis">
-              <label className="text-[12px] text-[#74512D]">자기소개</label>
+              <label className="pl-1 text-[12px] text-[#74512D]">
+                자기소개
+              </label>
               <textarea
                 disabled={uid !== data?.uid}
                 {...register("bio")}
                 className={cn(
                   "w-full h-[110px] p-2 bg-white  rounded-xl outline-none border resize-none overflow-hidden text-[14px]   text-[#543310]",
-                  uid !== data?.uid && "bg-[#eee]"
+                  uid !== data?.uid && "bg-white"
                 )}
               ></textarea>
             </div>

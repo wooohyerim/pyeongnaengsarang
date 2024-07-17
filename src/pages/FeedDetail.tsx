@@ -108,7 +108,6 @@ const FeedDetail = () => {
   };
 
   const handleClickUpdate = async (data: UpdatePostValue) => {
-    console.log("업로드 데이터 => ", data);
     try {
       await updatePost(data, postId || "");
       alert("수정이 완료되었습니다.");

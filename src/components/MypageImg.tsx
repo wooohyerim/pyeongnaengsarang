@@ -51,6 +51,12 @@ const MypageImg = ({ uid, dataUid, dataProfile, otherProfile }: PropsValue) => {
           uid !== dataUid && "hidden"
         )}
         disabled={uid !== dataUid}
+        // onChange={(e) => {
+        //   const file = e.target.files?.[0];
+        //   if (file) {
+        //     setValue("image", [file]);
+        //   }
+        // }}
       />
     </div>
   );
