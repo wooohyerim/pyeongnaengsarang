@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { createComment, deleteComment, updateComment } from "@/api/comment";
 import { auth } from "@/firebase/firebase";
 import { CommentValue } from "@/types";
-import { getPostComment } from "@/hooks/getCommentData";
+import { getPostComment } from "@/utils/getCommentData";
 import { cn } from "@/lib/utils";
 import LikeComment from "./LikeComment";
 

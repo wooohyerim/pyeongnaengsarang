@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { auth } from "@/firebase/firebase";
-import { getUserPost, getAllData } from "@/hooks/getPostData";
+import { getUserPost, getAllData } from "@/utils/getPostData";
 import Loading from "@/components/Loading";
 import Button from "@/components/common/Button";
 import MainLayout from "@/components/layout/MainLayout";
@@ -25,7 +25,7 @@ const FeedDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const methods = useForm();
-  const [selectedFileName, setSelectedFileName] = useState("");
+  // const [selectedFileName, setSelectedFileName] = useState("");
 
   // postId에 따라 정보 가져오기
   const {
@@ -83,17 +83,17 @@ const FeedDetail = () => {
     }
   }, [data, setValue]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setValue("image", [file]);
-      setSelectedFileName(file.name);
-      console.log("Selected image file:", file);
-    } else {
-      setValue("image", undefined);
-      setSelectedFileName("");
-    }
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const file = e.target.files[0];
+  //     setValue("image", [file]);
+  //     setSelectedFileName(file.name);
+  //     console.log("Selected image file:", file);
+  //   } else {
+  //     setValue("image", undefined);
+  //     setSelectedFileName("");
+  //   }
+  // };
 
   const handleClickDelete = async (postId: string) => {
     try {
@@ -199,9 +199,9 @@ const FeedDetail = () => {
                   {...register("image")}
                   id="postImg"
                   className={cn("w-full text-[14px] text-[#636363]")}
-                  onChange={handleImageChange}
+                  // onChange={handleImageChange}
                 />
-                {selectedFileName}
+                {/* {selectedFileName} */}
               </div>
             ) : null}
             <div className="w-full min-h-[150px] text-[15px] text-[#74512D]">

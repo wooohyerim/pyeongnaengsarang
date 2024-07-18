@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/MainLayout";
-import { getAllUserData } from "@/hooks/getUserData";
+import { getAllUserData } from "@/utils/getUserData";
 import { useNavigate } from "react-router-dom";
 import Loading from "@/components/Loading";
 import Error from "@/components/Error";

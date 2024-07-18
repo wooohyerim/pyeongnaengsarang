@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { useUserState } from "@/store/useUserState";
-import { getUserProfile, getAllUserData } from "@/hooks/getUserData";
+import { getUserProfile, getAllUserData } from "@/utils/getUserData";
 import { cn } from "@/lib/utils";
 import MainLayout from "@/components/layout/MainLayout";
 import Button from "@/components/common/Button";
