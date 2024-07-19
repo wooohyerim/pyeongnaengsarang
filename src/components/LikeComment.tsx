@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getLikesInfo, addLike, removeLike } from "@/api/comment";
 import { FaRegHeart } from "react-icons/fa";
 import { auth } from "@/firebase/firebase";

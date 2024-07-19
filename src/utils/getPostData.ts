@@ -1,4 +1,4 @@
-import { auth, db, storage } from "@/firebase/firebase";
+import { db } from "@/firebase/firebase";
 import {
   collection,
   getDocs,

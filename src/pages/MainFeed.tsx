@@ -25,13 +25,13 @@ const MainFeed = () => {
     error,
     isError,
     hasNextPage,
-    isFetching,
+    // isFetching,
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["infinityData"],
     queryFn: getAllInfiniteData,
     initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
   const { ref, inView } = useInView({
@@ -56,7 +56,7 @@ const MainFeed = () => {
     <MainLayout>
       <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
         {data ? (
-          data?.pages.map((page, pageIndex) =>
+          data?.pages.map((page) =>
             page.data.map((posts) => {
               // console.log(posts);
               const postUser = userData?.find((user) => user.uid === posts.uid);

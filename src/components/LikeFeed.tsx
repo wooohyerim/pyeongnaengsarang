@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaRegHeart } from "react-icons/fa";
 import { auth } from "@/firebase/firebase";

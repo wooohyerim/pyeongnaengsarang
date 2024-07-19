@@ -11,10 +11,7 @@ const UserList = () => {
     queryFn: getAllUserData,
   });
 
-  // console.log(data);
-
   const navigate = useNavigate();
-  // const displayName = data
 
   if (isLoading) {
     return <Loading />;
@@ -23,8 +20,6 @@ const UserList = () => {
   if (isError) {
     return <Error error={error} />;
   }
-
-  // console.log("유저조회페이지 => ", data);
 
   return (
     <MainLayout>

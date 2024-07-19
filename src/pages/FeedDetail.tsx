@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
@@ -25,7 +25,6 @@ const FeedDetail = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const methods = useForm();
-  // const [selectedFileName, setSelectedFileName] = useState("");
 
   // postId에 따라 정보 가져오기
   const {

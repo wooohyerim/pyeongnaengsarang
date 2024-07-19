@@ -44,7 +44,7 @@ const MyPage = () => {
 
   // 현재 유저
   const data = currentUserId === user?.uid ? currentUser : otherUser;
-  // console.log(data);
+
   if (isLoading) {
     return <Loading />;
   }
