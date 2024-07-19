@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
   const navigate = useNavigate();
 
-  const goToLogin = () => {
-    navigate("/login");
+  // const goToLogin = () => {
+  //   navigate("/login");
+  // };
+
+  const goToMain = () => {
+    navigate("/main");
   };
 
   return (
@@ -18,7 +22,7 @@ const Home = () => {
       <button
         className="w-[150px] h-[60px] mt-6 rounded-[8px] bg-[#74512D] text-white  font-bold"
         type="button"
-        onClick={goToLogin}
+        onClick={goToMain}
       >
         시작하기
       </button>

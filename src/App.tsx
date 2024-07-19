@@ -25,9 +25,9 @@ function App() {
           <Route
             path="/main"
             element={
-              <ProtectedRoute>
-                <MainFeed />
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              <MainFeed />
+              // </ProtectedRoute>
             }
           />
           <Route
@@ -49,9 +49,9 @@ function App() {
           <Route
             path="/detail/:postId"
             element={
-              <ProtectedRoute>
-                <FeedDetail />
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              <FeedDetail />
+              // </ProtectedRoute>
             }
           />
           <Route
