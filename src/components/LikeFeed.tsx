@@ -14,10 +14,15 @@ const LikeFeed = ({ postId }: PropType) => {
   const [likeCount, setLikeCount] = useState<number>(0);
   const queryClient = useQueryClient();
 
+  // console.log(likeCount);
+
   useEffect(() => {
     const fetchLikesInfo = async () => {
-      if (postId && user) {
-        const { liked, likeCount } = await getLikesInfo(postId, user.uid);
+      if (postId) {
+        const { liked, likeCount } = await getLikesInfo(
+          postId,
+          user?.uid || ""
+        );
         setLiked(liked);
         setLikeCount(likeCount);
       }

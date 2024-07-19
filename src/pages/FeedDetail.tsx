@@ -158,6 +158,7 @@ const FeedDetail = () => {
                     {dateString}
                   </span>
                 </div>
+
                 <LikeFeed postId={postId} />
               </div>
             </div>
@@ -215,6 +216,7 @@ const FeedDetail = () => {
               ></textarea>
             </div>
             <Comment postId={postId} uid={data?.uid} />
+
             {currentPost?.uid === user?.uid && (
               <div className="flex gap-6 ">
                 <Button

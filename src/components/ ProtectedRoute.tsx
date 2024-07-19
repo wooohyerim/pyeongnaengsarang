@@ -20,55 +20,23 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   });
   // console.log("query data => ", data);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-      if (currentUser) {
-        try {
-          if (data) {
-            await updateProfile(currentUser, {
-              photoURL: data.profileImg,
-              displayName: data.nickname,
-            });
-          }
-          setIsLogin(true);
-          setIsAuthenticated(true);
-          setUser({
-            uid: currentUser.uid,
-            email: currentUser.email || "",
-            displayName: currentUser.displayName || "",
-            photoURL: currentUser.photoURL || "",
-          });
-        } catch (error) {
-          console.log("update error", error);
-        }
-      } else {
-        console.log("로그아웃");
-        setIsAuthenticated(false);
-        setIsLogin(false);
-      }
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [data, setIsLogin, setUser]);
-
-  // 현재 유저 확인
   // useEffect(() => {
-  //   auth.onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       // console.log("onAuthStateChanged => ", user);
+  //   const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+  //     if (currentUser) {
   //       try {
-  //         await updateProfile(user, {
-  //           photoURL: data?.profileImg,
-  //           displayName: data?.nickname,
-  //         });
+  //         if (data) {
+  //           await updateProfile(currentUser, {
+  //             photoURL: data.profileImg,
+  //             displayName: data.nickname,
+  //           });
+  //         }
   //         setIsLogin(true);
   //         setIsAuthenticated(true);
   //         setUser({
-  //           uid: user?.uid,
-  //           email: user?.email || "",
-  //           displayName: user?.displayName || "",
-  //           photoURL: user?.photoURL || "",
+  //           uid: currentUser.uid,
+  //           email: currentUser.email || "",
+  //           displayName: currentUser.displayName || "",
+  //           photoURL: currentUser.photoURL || "",
   //         });
   //       } catch (error) {
   //         console.log("update error", error);
@@ -78,21 +46,53 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   //       setIsAuthenticated(false);
   //       setIsLogin(false);
   //     }
-  //   });
-  // }, [data]);
-
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       setIsAuthenticated(true);
-  //     } else {
-  //       setIsAuthenticated(false);
-  //     }
   //     setIsLoading(false);
   //   });
 
   //   return () => unsubscribe();
-  // }, []);
+  // }, [data, setIsLogin, setUser]);
+
+  // 현재 유저 확인
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // console.log("onAuthStateChanged => ", user);
+        try {
+          await updateProfile(user, {
+            photoURL: data?.profileImg,
+            displayName: data?.nickname,
+          });
+          setIsLogin(true);
+          setIsAuthenticated(true);
+          setUser({
+            uid: user?.uid,
+            email: user?.email || "",
+            displayName: user?.displayName || "",
+            photoURL: user?.photoURL || "",
+          });
+        } catch (error) {
+          console.log("update error", error);
+        }
+      } else {
+        console.log("로그아웃");
+        setIsAuthenticated(false);
+        setIsLogin(false);
+      }
+    });
+  }, [data]);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (isLoading) {
     // 인증 상태를 확인 중일 때 로딩 화면을 보여줌

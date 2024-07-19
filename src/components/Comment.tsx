@@ -80,20 +80,23 @@ const Comment = ({ postId, uid }: PropValue) => {
 
   return (
     <div className=" min-h-[150px]">
-      <div className="flex justify-between w-full h-[60px]  gap-2  ">
-        <input
-          {...register("comment")}
-          className="w-[400px] h-[40px] outline-none border rounded-xl p-2"
-          type="text"
-          placeholder="댓글을 입력해주세요."
-        />
-        <Button
-          onClick={handleSubmitComment}
-          type="button"
-          title="등록"
-          className="w-[50px] h-[40px] text-[14px] p-2 border-none bg-[#543310] font-bold text-white rounded-xl "
-        />
-      </div>
+      {user && (
+        <div className="flex justify-between w-full h-[60px]  gap-2  ">
+          <input
+            {...register("comment")}
+            className="w-[400px] h-[40px] outline-none border rounded-xl p-2"
+            type="text"
+            placeholder="댓글을 입력해주세요."
+          />
+          <Button
+            onClick={handleSubmitComment}
+            type="button"
+            title="등록"
+            className="w-[50px] h-[40px] text-[14px] p-2 border-none bg-[#543310] font-bold text-white rounded-xl "
+          />
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         {commentData && commentData?.length > 0 ? (
           commentData?.map((list) => {

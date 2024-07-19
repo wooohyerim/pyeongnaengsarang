@@ -1,19 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useUserState } from "@/store/useUserState";
 import Button from "./common/Button";
 import { auth } from "@/firebase/firebase";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const currentUser = auth.currentUser;
   const { user } = useUserState();
+  // console.log(user);
   const photoURL = user?.photoURL;
   const onClickLogout = async () => {
     try {
       await auth.signOut();
-      alert("로그아웃되어서 로그인 페이지로 이동합니다.");
-      navigate("/login");
+      alert("로그아웃되어서 시작 페이지로 이동합니다.");
+      navigate("/");
     } catch (error) {
       console.log("logout 실패", error);
     }
@@ -32,16 +34,9 @@ const Header: React.FC = () => {
         ㅍㄴㅅㄹ
       </h1>
       <div className="flex gap-4">
-        {user !== null && (
-          <Avatar>
-            {photoURL ? (
-              <AvatarImage src={photoURL} alt="img" />
-            ) : (
-              <AvatarFallback>profile</AvatarFallback>
-            )}
-          </Avatar>
-        )}
-        {user === null ? (
+        <Avatar>{photoURL && <AvatarImage src={photoURL} alt="img" />}</Avatar>
+
+        {currentUser === null ? (
           <Button
             title="로그인"
             type="button"
