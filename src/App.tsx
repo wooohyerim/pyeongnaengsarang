@@ -15,7 +15,7 @@ function App() {
     <>
       <Helmet>
         <title>ㅍㄴㅅㄹ</title>
-        <link rel="icon" href="/vite.svg" />
+        <link rel="icon" href="/logo.ico" />
       </Helmet>
       <Router>
         <Routes>
