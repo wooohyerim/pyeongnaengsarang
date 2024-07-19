@@ -8,12 +8,14 @@ import { auth } from "@/firebase/firebase";
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const currentUser = auth.currentUser;
-  const { user } = useUserState();
+  const { user, setUser } = useUserState();
   // console.log(user);
   const photoURL = user?.photoURL;
+  console.log(photoURL);
   const onClickLogout = async () => {
     try {
       await auth.signOut();
+      setUser(null);
       alert("로그아웃되어서 시작 페이지로 이동합니다.");
       navigate("/");
     } catch (error) {
@@ -34,7 +36,9 @@ const Header: React.FC = () => {
         ㅍㄴㅅㄹ
       </h1>
       <div className="flex gap-4">
-        <Avatar>{photoURL && <AvatarImage src={photoURL} alt="img" />}</Avatar>
+        <Avatar>
+          {user ? <AvatarImage src={photoURL || ""} alt="img" /> : null}
+        </Avatar>
 
         {currentUser === null ? (
           <Button

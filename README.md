@@ -1,4 +1,7 @@
 # ㅍㄴㅅㄹ 
+<p align="center">
+<img src="src/assets/image/ㅍㄴㅅㄹ.png" />
+</p>
 
 ## 📌 프로젝트 소개
 평양냉면을 좋아하는 사람들이 자유롭게 소통할 수 있는 커뮤니티 입니다. 
@@ -52,17 +55,24 @@ $ npm run dev
 - 구글 로그인 적용
   <details><summary>영상
   </summary>
-  *Write here!*
+   로그인 
+  
+  ![login](https://github.com/user-attachments/assets/de5ddae3-74a5-4193-a2c9-bc287f59ec8e)
+
+  회원가입
+
+  ![회원가입](https://github.com/user-attachments/assets/5d6f962e-cce1-4447-b4a5-77d1e6aa148a)
+
   </details>
-
-
 
 #### 전체 게시글 조회
 - 게시글 최신순으로 정렬
-- 무한스크롤을 적용
+- 무한스크롤을 활용한 페이지네이션
   <details><summary>영상
   </summary>
-  *Write here!*
+
+  ![전체 게시글 조회](https://github.com/user-attachments/assets/e2104e77-719a-488d-82f6-1568f12c8633)
+
   </details>
 
 #### 유저 조회
@@ -71,7 +81,8 @@ $ npm run dev
   <details><summary>영상
   </summary>
 
-  *Write here!*
+  ![유저 조회](https://github.com/user-attachments/assets/8b510e56-712f-41f6-9d25-67cd04374c73)
+
   </details>
 
 #### 마이 페이지
@@ -104,4 +115,6 @@ $ npm run dev
 
 <br />
 
-## 성능 최적화
+## 성능 최적화 (예정)
+- 랜더링 최적화 
+- 이미지/미디어 파일 최적화 

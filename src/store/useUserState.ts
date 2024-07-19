@@ -7,4 +7,5 @@ export const useUserState = create<UserState>((set) => ({
   setUser: (user) => set({ user }),
   isLogin: false,
   setIsLogin: (isLogin) => set({ isLogin }),
+  clearUser: () => set({ user: null, isLogin: false }),
 }));

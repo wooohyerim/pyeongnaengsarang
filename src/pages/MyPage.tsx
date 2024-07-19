@@ -67,7 +67,7 @@ const MyPage = () => {
     try {
       await updateUser(data);
       alert("수정이 완료되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["users", user?.uid] });
+      await queryClient.invalidateQueries({ queryKey: ["users", user?.uid] });
       navigate("/user");
     } catch (error) {
       console.error("Error updating profile: ", error);
