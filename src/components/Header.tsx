@@ -8,10 +8,9 @@ import { auth } from "@/firebase/firebase";
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const currentUser = auth.currentUser;
-  const { user, setUser } = useUserState();
-  // console.log(user);
-  const photoURL = user?.photoURL;
-  console.log(photoURL);
+  const { setUser } = useUserState();
+
+  // console.log(currentUser?.photoURL);
   const onClickLogout = async () => {
     try {
       await auth.signOut();
@@ -37,7 +36,9 @@ const Header: React.FC = () => {
       </h1>
       <div className="flex gap-4">
         <Avatar>
-          {user ? <AvatarImage src={photoURL || ""} alt="img" /> : null}
+          {currentUser ? (
+            <AvatarImage src={currentUser.photoURL || ""} alt="img" />
+          ) : null}
         </Avatar>
 
         {currentUser === null ? (

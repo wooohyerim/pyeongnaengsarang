@@ -56,7 +56,7 @@ $ npm run dev
   <details><summary>영상
   </summary>
    로그인 
-  
+
   ![login](https://github.com/user-attachments/assets/de5ddae3-74a5-4193-a2c9-bc287f59ec8e)
 
   회원가입
@@ -89,7 +89,9 @@ $ npm run dev
 - 닉네임, 프로필 이미지, 인사말 업데이트 기능
   <details><summary>영상
   </summary>
-  *Write here!*
+  
+  ![마이페이지](https://github.com/user-attachments/assets/0e59f4bb-e199-46b5-9ed2-db3435ff70aa)
+  
   </details>
 
 #### 게시글
@@ -97,7 +99,9 @@ $ npm run dev
 - 게시글 좋아요 기능 적용
   <details><summary>영상
   </summary>
-  *Write here!*
+
+  ![게시글](https://github.com/user-attachments/assets/18e7f4f0-5835-4392-88ae-70517089b10c)
+
   </details>
   
 #### 댓글
@@ -106,15 +110,24 @@ $ npm run dev
 - 댓글 좋아요 기능 적용
    <details><summary>영상
   </summary>
-  *Write here!*
+  
+  ![댓글](https://github.com/user-attachments/assets/9312ced3-9f66-406b-af36-0726242618fe)
+
   </details>
 
 <br />
 
 ## 트러블 슈팅
 
+- 게시글 업데이트 시 이미지 업로드 오류 해결
+
 <br />
 
 ## 성능 최적화 (예정)
-- 랜더링 최적화 
-- 이미지/미디어 파일 최적화 
+<!-- - 랜더링 최적화 
+- 이미지/미디어 파일 최적화  -->
+
+
+## ⚙️ 아키텍쳐
+
+<img width="821" alt="아키텍쳐" src="https://github.com/user-attachments/assets/4744c6c1-0f14-47a9-a4b6-4202bf094712">

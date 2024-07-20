@@ -46,6 +46,7 @@ const Comment = ({ postId, uid }: PropValue) => {
       alert("작성되었습니다.");
       reset();
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
     } catch (error) {
       console.log("comment 등록 error =>", error);
     }
@@ -69,6 +70,7 @@ const Comment = ({ postId, uid }: PropValue) => {
     const modifyComment = watch(`modifyComment_${comment_id}`);
     try {
       await updateComment(modifyComment, postId || "", comment_id);
+      alert("수정되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["comments", postId || ""] });
     } catch (error) {
       console.log("comment 수정 error =>", error);

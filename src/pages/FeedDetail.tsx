@@ -64,23 +64,23 @@ const FeedDetail = () => {
   ).slice(-2);
   const dateString = year + "-" + month + "-" + days;
 
-  // if (postId === data?.postId) {
-  //   setValue("title", data?.title);
-  //   setValue("content", data?.content);
-  //   setValue("image", data?.photoURL);
-  // } else {
-  //   setValue("title", otherPost?.title);
-  //   setValue("content", otherPost?.content);
-  //   setValue("image", otherPost?.photoURL);
-  // }
+  if (postId === data?.postId) {
+    setValue("title", data?.title);
+    setValue("content", data?.content);
+    setValue("image", data?.photoURL);
+  } else {
+    setValue("title", otherPost?.title);
+    setValue("content", otherPost?.content);
+    setValue("image", otherPost?.photoURL);
+  }
 
-  useEffect(() => {
-    if (data) {
-      setValue("title", data.title);
-      setValue("content", data.content);
-      setValue("image", data.photoURL);
-    }
-  }, [data, setValue]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setValue("title", data.title);
+  //     setValue("content", data.content);
+  //     setValue("image", data.photoURL);
+  //   }
+  // }, [data, setValue]);
 
   // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   if (e.target.files && e.target.files.length > 0) {

@@ -1,5 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLikesInfo, addLike, removeLike } from "@/api/comment";
 import { FaRegHeart } from "react-icons/fa";
 import { auth } from "@/firebase/firebase";
@@ -11,42 +10,92 @@ interface PropValues {
 
 const LikeComment = ({ postId, comment_id }: PropValues) => {
   const user = auth.currentUser;
-  const [liked, setLiked] = useState<boolean>(false);
-  const [likeCount, setLikeCount] = useState<number>(0);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchLikesInfo = async (comment_id: string) => {
-      if (postId && user && comment_id) {
-        const { liked, likeCount } = await getLikesInfo(
-          postId,
-          user.uid,
-          comment_id
-        );
-        setLiked(liked);
-        setLikeCount(likeCount);
-      }
-    };
-    fetchLikesInfo(comment_id || "");
-  }, [postId, user, comment_id]);
+  const { data } = useQuery({
+    queryKey: ["commentLikes", postId, comment_id],
+    queryFn: () =>
+      getLikesInfo(postId || "", user?.uid || "", comment_id || ""),
+  });
+
+  const liked = data?.liked ?? false;
+  const likeCount = data?.likeCount ?? 0;
 
   const addLikeMutation = useMutation({
     mutationFn: (comment_id: string) =>
       addLike(postId || "", user?.uid || "", comment_id),
-    onSuccess: () => {
-      setLiked(true);
-      setLikeCount((count) => count + 1);
-      queryClient.invalidateQueries({ queryKey: ["commentLikes", postId] });
+    onMutate: async (comment_id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: ["commentLikes", postId, comment_id],
+      });
+
+      const previous = queryClient.getQueryData([
+        "commentLikes",
+        postId,
+        comment_id,
+      ]);
+
+      queryClient.setQueryData(
+        ["commentLikes", postId, comment_id],
+        (old: any) => ({
+          ...old,
+          liked: true,
+          likeCount: old.likeCount + 1,
+        })
+      );
+
+      return { previous };
+    },
+    onError: (_err, comment_id, context) => {
+      queryClient.setQueryData(
+        ["commentLikes", postId, comment_id],
+        context?.previous
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["commentLikes", postId, comment_id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
     },
   });
 
   const removeLikeMutation = useMutation({
     mutationFn: (comment_id: string) =>
       removeLike(postId || "", user?.uid || "", comment_id),
-    onSuccess: () => {
-      setLiked(false);
-      setLikeCount((count) => count - 1);
-      queryClient.invalidateQueries({ queryKey: ["commentLikes", postId] });
+    onMutate: async (comment_id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: ["commentLikes", postId, comment_id],
+      });
+
+      const previous = queryClient.getQueryData([
+        "commentLikes",
+        postId,
+        comment_id,
+      ]);
+
+      queryClient.setQueryData(
+        ["commentLikes", postId, comment_id],
+        (old: any) => ({
+          ...old,
+          liked: false,
+          likeCount: old.likeCount - 1,
+        })
+      );
+
+      return { previous };
+    },
+    onError: (_err, comment_id, context) => {
+      queryClient.setQueryData(
+        ["commentLikes", postId, comment_id],
+        context?.previous
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["commentLikes", postId, comment_id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
     },
   });
 
