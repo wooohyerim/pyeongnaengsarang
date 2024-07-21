@@ -34,16 +34,17 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className="sticky bottom-0 w-[500px] h-[55px]  bg-[#D1BB9E] border border-x-[#dadada] border-y-0 pt-[8px] px-4">
+    <nav className="sticky bottom-0 w-[500px] h-[60px] bg-[#D1BB9E] border border-x-[#dadada] border-y-0 pt-[12px] px-4">
       <div className="flex items-center justify-between w-full h-[45px] mx-auto my-0 ">
         {NAVIGATE_LIST.map((item) => {
           return (
-            <ul key={item.title} className="flex flex-col items-center gap-1">
+            <ul
+              key={item.title}
+              onClick={() => navigate(item.navigate)}
+              className="flex flex-col items-center gap-1 cursor-pointer "
+            >
               <span>{item.icon}</span>
-              <li
-                onClick={() => navigate(item.navigate)}
-                className="w-full h-[30px] text-[16px] text-[#74512D] border-1 border-b-[#A79277] cursor-pointer hover:text-[#543310] transition"
-              >
+              <li className="w-full h-[30px] text-[16px] text-[#74512D] border-1 border-b-[#A79277]  hover:text-[#543310] transition">
                 {item.title}
               </li>
             </ul>

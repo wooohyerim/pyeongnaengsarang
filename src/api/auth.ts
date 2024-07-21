@@ -72,7 +72,7 @@ export const saveGoogleUser = async (user: User): Promise<void> => {
       nickname: user.displayName,
       providerId: user.providerId,
       createdAt: Timestamp.fromDate(new Date()),
-      bio: "안녕하세요. 구글 로그인 테스트 하고 있습니다.",
+      bio: "",
     });
   } catch (error) {
     alert(error);
