@@ -1,4 +1,5 @@
 import { auth, db, storage } from "@/firebase/firebase";
+import Resizer from "react-image-file-resizer";
 import { PostValue } from "@/types";
 import {
   getDoc,
@@ -24,29 +25,23 @@ interface UpdatePostValue {
   content?: string;
 }
 
-// // 이미지 webp로 변환
-// const convertToWebP = (file: Blob): Promise<Blob> => {
-//   return new Promise((resolve, reject) => {
-//     const img = new Image();
-//     img.src = URL.createObjectURL(file);
-//     img.onload = () => {
-//       const canvas = document.createElement("canvas");
-//       canvas.width = img.width;
-//       canvas.height = img.height;
-//       const ctx = canvas.getContext("2d");
-//       ctx?.drawImage(img, 0, 0);
-
-//       canvas.toBlob((blob) => {
-//         if (blob) {
-//           resolve(blob);
-//         } else {
-//           reject(new Error("Image conversion failed"));
-//         }
-//       }, "image/webp");
-//     };
-//     img.onerror = reject;
-//   });
-// };
+// 이미지 크기 조정
+const resizeFile = (file: Blob): Promise<Blob> =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "*",
+      100,
+      0,
+      (uri: any) => {
+        const blob = new Blob([uri], { type: "image/webp" });
+        resolve(blob);
+      },
+      "blob"
+    );
+  });
 
 // post 생성
 export const createPost = async (data: PostValue) => {
@@ -57,10 +52,10 @@ export const createPost = async (data: PostValue) => {
     let imageUrl = "";
     if (data.image && data.image.length > 0) {
       const postImg = data.image[0];
-      // const webpImg = await convertToWebP(postImg);
+      const resizeImg = await resizeFile(postImg);
 
       const fileRef = ref(storage, `${user?.uid}/post/${postImg.name}`);
-      await uploadBytes(fileRef, postImg);
+      await uploadBytes(fileRef, resizeImg);
       imageUrl = await getDownloadURL(fileRef);
     }
 

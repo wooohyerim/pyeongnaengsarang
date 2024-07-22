@@ -27,6 +27,15 @@ const Post = () => {
     }
   }, [preview]);
 
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const file = e.target.files[0];
+
+  //     console.log("Selected image file:", file);
+  //   } else {
+  //   }
+  // };
+
   const handlePostContent = async (data: PostValue) => {
     try {
       await createPost(data);
@@ -65,6 +74,7 @@ const Post = () => {
               accept=" .jpg, .png, .jpeg"
               id="profile"
               className="hidden"
+              // onChange={handleImageChange}
             />
           </div>
 

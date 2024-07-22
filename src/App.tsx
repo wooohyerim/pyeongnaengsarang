@@ -14,6 +14,7 @@ function App() {
   return (
     <>
       <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ㅍㄴㅅㄹ</title>
         <link rel="icon" href="/logo.ico" />
       </Helmet>
@@ -22,14 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
-          <Route
-            path="/main"
-            element={
-              // <ProtectedRoute>
-              <MainFeed />
-              // </ProtectedRoute>
-            }
-          />
+          <Route path="/main" element={<MainFeed />} />
           <Route
             path="/user"
             element={
