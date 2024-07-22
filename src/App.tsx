@@ -15,6 +15,10 @@ function App() {
     <>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="description"
+          content="평양냉면을 좋아하는 사람들의 소통 공간"
+        ></meta>
         <title>ㅍㄴㅅㄹ</title>
         <link rel="icon" href="/logo.ico" />
       </Helmet>

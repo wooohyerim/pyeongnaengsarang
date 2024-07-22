@@ -1,4 +1,5 @@
 // import { useEffect } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
@@ -43,12 +44,20 @@ const FeedDetail = () => {
     queryFn: getAllData,
   });
 
-  const otherPost = allPost?.find((post) => post.postId === postId);
+  // const otherPost = allPost?.find((post) => post.postId === postId);
   // console.log(otherPost);
 
   // 현재 포스트
-  const data = postId === currentPost?.postId ? currentPost : otherPost;
+  // const data = postId === currentPost?.postId ? currentPost : otherPost;
   // console.log(data);
+
+  // data 렌더링 최적화
+  const data = useMemo(() => {
+    if (currentPost?.postId === postId) {
+      return currentPost;
+    }
+    return allPost?.find((post) => post.postId === postId);
+  }, [allPost, currentPost, postId]);
 
   const { register, handleSubmit, setValue } = useForm<UpdatePostValue>();
 
@@ -68,11 +77,13 @@ const FeedDetail = () => {
     setValue("title", data?.title);
     setValue("content", data?.content);
     setValue("image", data?.photoURL);
-  } else {
-    setValue("title", otherPost?.title);
-    setValue("content", otherPost?.content);
-    setValue("image", otherPost?.photoURL);
   }
+
+  // else {
+  //   setValue("title", otherPost?.title);
+  //   setValue("content", otherPost?.content);
+  //   setValue("image", otherPost?.photoURL);
+  // }
 
   // useEffect(() => {
   //   if (data) {
@@ -170,9 +181,11 @@ const FeedDetail = () => {
                       user?.uid !== data?.uid && "h-[250px]"
                     )}
                     src={
-                      postId !== data?.postId
-                        ? otherPost?.photoURL
-                        : data?.photoURL
+                      data
+                        ? // postId !== data?.postId
+                          // ? otherPost?.photoURL
+                          data?.photoURL
+                        : null
                     }
                     alt="img"
                   />

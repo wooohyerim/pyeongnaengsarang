@@ -119,16 +119,22 @@ $ npm run dev
 
 ## 트러블 슈팅
 
-- 게시글 업데이트 시 이미지 업로드 오류 해결
+- [게시글 업데이트 시 이미지 업로드 오류 해결](https://wooohyerim.github.io/docs/g-fe/trouble/react01)
+- 
 
 <br />
 
-## 성능 최적화 (예정)
+## 성능 최적화
 
-1. SEO 개선
+#### 1. SEO 개선
   - meta tag 설정 - ```React-Helmet```
   - sitemap & robots.txt 설정
+#### 2. 이미지 최적화
+  - ```react-image-file-resizer``` 라이브러리를 활용하여 업로드되는 이미지의 크기를 조정
+  - LCP : 15.9s -> 11.6s
+  - FCP : 5.1s -> 4.3s
 
+<br />
 
 ## ⚙️ 아키텍쳐
 
