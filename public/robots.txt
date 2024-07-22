@@ -1,3 +1,8 @@
 User-agent: *
-Allow : "/"
-Sitemap : https://pyeongnaengsarang.vercel.app/
+Disallow : /login
+Disallow : /signup
+Disallow : /post
+Disallow : /detail/:postId
+Disallow : /mypage/:uid
+
+Sitemap : https://pyeongnaengsarang.vercel.app/sitemap.xml

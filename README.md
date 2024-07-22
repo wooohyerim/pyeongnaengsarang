@@ -127,6 +127,7 @@ $ npm run dev
 
 1. SEO 개선
   - meta tag 설정 - ```React-Helmet```
+  - sitemap & robots.txt 설정
 
 
 ## ⚙️ 아키텍쳐
