@@ -59,6 +59,9 @@ $ npm run dev
 
   ![login](https://github.com/user-attachments/assets/de5ddae3-74a5-4193-a2c9-bc287f59ec8e)
 
+
+
+
   회원가입
 
   ![회원가입](https://github.com/user-attachments/assets/5d6f962e-cce1-4447-b4a5-77d1e6aa148a)
@@ -117,25 +120,27 @@ $ npm run dev
 
 <br />
 
-## 트러블 슈팅
+## ❗️ 트러블 슈팅
 
 - [게시글 업데이트 시 이미지 업로드 오류 해결](https://wooohyerim.github.io/docs/g-fe/trouble/react01)
-- 
+  
 
 <br />
 
-## 성능 최적화
+## 📈 성능 최적화
 
 #### 1. SEO 개선
-  - meta tag 설정 - ```React-Helmet```
-  - sitemap & robots.txt 설정
+  - ```React-Helmet``` 적용하여 meta tag 설정
+  - sitemap & robots.txt 생성
+  - Lighthouse SEO 92 > 100 개선
+
 #### 2. 이미지 최적화
-  - ```react-image-file-resizer``` 라이브러리를 활용하여 업로드되는 이미지의 크기를 조정
-  - LCP : 15.9s -> 11.6s
-  - FCP : 5.1s -> 4.3s
+  - 업로드되는 이미지의 크기를 조정 하기 위해 ```react-image-file-resizer``` 라이브러리 적용
+  - LCP : 15.9s -> 11.6s 개선
+  - FCP : 5.1s -> 4.3s 개선
 
 <br />
 
 ## ⚙️ 아키텍쳐
 
-<img width="821" alt="아키텍쳐" src="https://github.com/user-attachments/assets/4744c6c1-0f14-47a9-a4b6-4202bf094712">
+<img width="500" alt="아키텍쳐" src="https://github.com/user-attachments/assets/4744c6c1-0f14-47a9-a4b6-4202bf094712">

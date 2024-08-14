@@ -14,82 +14,6 @@ const LikeFeed = ({ postId }: PropType) => {
   const [likeCount, setLikeCount] = useState<number>(0);
   const queryClient = useQueryClient();
 
-  // const { data } = useQuery({
-  //   queryKey: ["postLikes", postId],
-  //   queryFn: () => getLikesInfo(postId || "", user?.uid || ""),
-  // });
-
-  // const liked = data?.liked ?? false;
-  // const likeCount = data?.likeCount ?? 0;
-
-  // const addLikeMutation = useMutation({
-  //   mutationFn: () => addLike(postId || "", user?.uid || ""),
-  //   onMutate: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["postLikes", postId] });
-
-  //     const previous = queryClient.getQueryData([
-  //       "postLikes",
-  //       postId,
-  //       user?.uid,
-  //     ]);
-
-  //     queryClient.setQueryData(
-  //       ["postLikes", postId, user?.uid],
-  //       (old: any) => ({
-  //         ...old,
-  //         liked: true,
-  //         likeCount: old.likeCount + 1,
-  //       })
-  //     );
-
-  //     return { previous };
-  //   },
-  //   // onError: (_err,  context) => {
-  //   //   queryClient.setQueryData(
-  //   //     ["postLikes", postId, user?.uid],
-  //   //     context?.previous
-  //   //   );
-  //   // },
-  //   onSettled: () => {
-  //     queryClient.invalidateQueries({
-  //       queryKey: ["postLikes", postId, user?.uid],
-  //     });
-  //     queryClient.invalidateQueries({ queryKey: ["posts", postId] });
-  //   },
-  // });
-
-  // const removeLikeMutation = useMutation({
-  //   mutationFn: () => removeLike(postId || "", user?.uid || ""),
-  //   onMutate: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["postLikes", postId] });
-
-  //     const previous = queryClient.getQueryData([
-  //       "postLikes",
-  //       postId,
-  //       user?.uid,
-  //     ]);
-
-  //     queryClient.setQueryData(
-  //       ["commentLikes", postId, user?.uid],
-  //       (old: any) => ({
-  //         ...old,
-  //         liked: true,
-  //         likeCount: old.likeCount - 1,
-  //       })
-  //     );
-
-  //     return { previous };
-  //   },
-  //   onSettled: () => {
-  //     queryClient.invalidateQueries({
-  //       queryKey: ["postLikes", postId, user?.uid],
-  //     });
-  //     queryClient.invalidateQueries({ queryKey: ["posts", postId] });
-  //   },
-  // });
-
-  // console.log(likeCount);
-
   useEffect(() => {
     const fetchLikesInfo = async () => {
       if (postId) {
@@ -124,10 +48,12 @@ const LikeFeed = ({ postId }: PropType) => {
   });
 
   const handleLike = () => {
-    if (liked) {
-      removeLikeMutation.mutate();
-    } else {
-      addLikeMutation.mutate();
+    if (user) {
+      if (liked) {
+        removeLikeMutation.mutate();
+      } else {
+        addLikeMutation.mutate();
+      }
     }
   };
 

@@ -54,7 +54,7 @@ const MainFeed = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-wrap justify-between w-full min-h-[730px] gap-4 px-3 py-4">
+      <div className="flex flex-col w-full min-h-[730px] gap-8 px-3 py-4 ">
         {data ? (
           data?.pages.map((page) =>
             page.data.map((posts) => {
