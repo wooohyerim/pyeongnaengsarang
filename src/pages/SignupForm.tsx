@@ -57,7 +57,7 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="flex flex-col w-[500px] h-full my-0 mx-auto p-3 bg-[#F8F0E5]">
+    <div className="flex flex-col w-[500px]  my-0 mx-auto p-3 bg-[#F8F0E5]">
       <span
         onClick={() => navigate(-1)}
         className="w-[30px] text-[24px] font-bold text-[#543310] cursor-pointer lg:hidden"
